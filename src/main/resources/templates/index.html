@@ -10,14 +10,14 @@
 <body>
 
 <nav class="navbar navbar-default">
-    <div class="container-fluid">
-        <!-- Brand and toggle get grouped for better mobile display -->
+    <!--导航条-->
+    <div class="container-fluid" style="background-color: #9acfea;">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
                     data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                <span class="sr-only">昆卡社区</span>
+                <span class="sr-only"><span style="color:white;">昆卡社区</span></span>
             </button>
-            <a class="navbar-brand" href="#">昆卡社区</a>
+            <a class="navbar-brand" href="#"><span style="color:white;">昆卡社区</span></a>
         </div>
 
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
@@ -28,13 +28,18 @@
                 <button type="submit" class="btn btn-default">搜索</button>
             </form>
             <ul class="nav navbar-nav navbar-right">
-                <li th:if="${session.githubUser== null}">
-                    <a href="https://github.com/login/oauth/authorize?client_id=fa18c789f9de7091517f&redirect_uri=http://localhost:8887/callback&scope=user&state=2">登录</a>
-                </li>
-                <li th:if="${session.githubUser!= null}" class="dropdown">
-                    <a th:text="${session.githubUser.getName()}" href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                        <span class="caret"></span>
+                <li th:if="${session.user== null}">
+                    <a href="https://github.com/login/oauth/authorize?client_id=fa18c789f9de7091517f&redirect_uri=http://localhost:8887/callback&scope=user&state=2">
+                        <span style="color:white;">登录</span>
                     </a>
+                </li>
+                <li th:if="${session.user!= null}" class="dropdown">
+                    <h4>
+                        <a style="display: inline;" class="glyphicon glyphicon-edit" th:href="@{/publish}"></a><span style="color:white;">发布</span>&nbsp;&nbsp;
+                        <a style="display: inline;color: white" th:text="${session.user.getName()}" href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                            <span class="caret"></span>
+                        </a>
+                    </h4>
                     <ul class="dropdown-menu">
                         <li><a href="#">消息中心</a></li>
                         <li><a href="#">个人资料</a></li>

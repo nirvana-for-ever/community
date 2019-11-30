@@ -3,6 +3,7 @@ package com.nirvana.community.mapper;
 import com.nirvana.community.model.User;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
 
 /**
  * @program: community
@@ -19,6 +20,13 @@ public interface UserMapper {
      * @return
      */
     @Insert("insert into user (name,account_id,token,gmt_create,gmt_modified) values (#{name},#{accountId},#{token},#{gmtCreate},#{gmtModified})")
-    void insertUser(User user);
+    int insertUser(User user);
 
+    /**
+     * 根据token查询用户
+     * @param token
+     * @return
+     */
+    @Select("select * from user where token=#{token}")
+    User selectUserByToken(String token);
 }

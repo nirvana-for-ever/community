@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/bootstrap-theme.min.css">
+    <script src="/js/bootstrap.min.js" type="application/javascript"></script>
+    <script src="/js/jquery-1.7.2.min.js" type="text/javascript"></script>
+    <title>发布~~昆卡社区</title>
+</head>
+<body background="img/background.PNG">
+
+<nav class="navbar navbar-default">
+    <!--导航条-->
+    <div class="container-fluid" style="background-color: #9acfea;">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only"><span style="color:white;">昆卡社区</span></span>
+            </button>
+            <a class="navbar-brand" href="#"><span style="color:white;">昆卡社区</span></a>
+        </div>
+
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <form class="navbar-form navbar-left">
+                <div class="form-group">
+                    <input type="text" class="form-control" placeholder="搜索问题">
+                </div>
+                <button type="submit" class="btn btn-default">搜索</button>
+            </form>
+            <ul class="nav navbar-nav navbar-right">
+                <li th:if="${session.user== null}">
+                    <a href="https://github.com/login/oauth/authorize?client_id=fa18c789f9de7091517f&redirect_uri=http://localhost:8887/callback&scope=user&state=2">
+                        <span style="color:white;">登录</span>
+                    </a>
+                </li>
+                <li th:if="${session.user!= null}" class="dropdown">
+                    <h4>
+                        <a style="display: inline;" class="glyphicon glyphicon-edit" th:href="@{/publish}"></a><span style="color:white;">发布</span>&nbsp;&nbsp;
+                        <a style="display: inline;color: white" th:text="${session.user.getName()}" href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                            <span class="caret"></span>
+                        </a>
+                    </h4>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">消息中心</a></li>
+                        <li><a href="#">个人资料</a></li>
+                        <li><a href="#">退出登录</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="container-fluid" style="background: white;margin-left: 200px;margin-top: 30px;margin-right: 200px">
+    <div class="row">
+        <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
+            <div>
+                <!--发起问题的铅笔样式-->
+                <h3><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> 发起</h3>
+                <hr><!--分割线-->
+                <!--描述问题-->
+                <div class="form-group">
+                    <label for="title">问题标题（简单扼要）：</label>
+                    <input type="text" class="form-control" id="title" name="title" placeholder="问题标题">
+                </div>
+                <div class="form-group">
+                    <label for="title">问题补充（必填，参照右边提示）：</label>
+                    <textarea class="form-control" cols="30" rows="10" id="description"
+                              name="description"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="tag">添加标签：</label><br>
+                    <span id="tagSpan"></span>
+                    <br><br>
+                    <input type="text" class="form-control" id="tag" placeholder="添加标签,空格添加.......">
+                </div>
+                <button onclick="submitQuestion()" class="btn btn-primary btn-lg active" style="float: right;">确认发布</button>
+            </div>
+            <br><br><br>
+        </div>
+        <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+            <div id="guide">
+                <h3>问题发起指南</h3><br>
+                <h5>
+                    • 问题标题: 请用精简的语言描述您发布的问题，不超过25字<br><br>
+                    • 问题补充: 详细补充您的问题内容，并确保问题描述清晰直观, 并提供一些相关的资料：<br><br>
+                    服务器运行环境信息；<br>
+                    软件版本；<br>
+                    问题发生的上下文信息；<br>
+                    可以完整复现问题的代码（如可直接运行于 Kibana Console 的复现流程）；<br>
+                    补充完整的异常和错误信息；<br>
+                    注意阅读格式友好，代码和异常信息请用代码标签格式化张贴；<br><br>
+                    • 选择标签: 选择一个或者多个合适的标签，不超过10个字
+                </h5>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script language="javascript" type="text/javascript">
+
+    var i = 1;
+    var tags = new Map();
+
+    $(function(){
+        $("#tag").bind("keypress",function(event){
+            if(event.keyCode == "32") {
+                var tag = $("#tag").val();
+                //h3标签默认换行，用css的display: inline可以让他不换行
+                $("#tagSpan").append("<span style='margin-outside: 20px;float: left' id="+i+"><h3 style='display: inline'><span class=\"label label-primary\">"+
+                    tag+"&nbsp;<span class=\"glyphicon glyphicon-remove\" aria-hidden=\"true\" onclick=\"deleteTag("+i+")\"></span></span></h3><span>&nbsp;&nbsp;</span></span>");
+                $("#tag").val(null);
+                tags.set(i,tag);
+                i += 1;
+            }
+        });
+    });
+
+    function deleteTag(id) {
+        $("#"+id).html(null);
+        tags.delete(id);
+    }
+
+    function submitQuestion() {
+
+        //@TODO 做一下判断输入框不能为空，后台也需要判断
+
+        var title = $("#title").val();
+        var description = $("#description").val();
+        var a = 1;
+        var tag = "";
+        while (a < i) {
+            if (tags.get(a) !== undefined) {
+                tag += tags.get(a);
+                if (i !== a + 1){
+                    tag += ",";
+                }
+            }
+            a++;
+        }
+        $.ajax({
+            url:"/publish",
+            type:"post",
+            data: {
+                title: title,
+                description: description,
+                tag: tag
+            }
+        });
+    }
+
+</script>
+
+</body>
+</html>
+
+
+

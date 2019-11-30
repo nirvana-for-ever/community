@@ -18,6 +18,8 @@ ctrl+y：删除一整行
 
 ctrl+x：剪切一整行
 
+ctrl+w：逐级选中
+
 ---
 markdown有关知识：
 
@@ -27,3 +29,10 @@ markdown超链接
 ---
 数据传输对象（DTO)(Data Transfer Object),一个好的编程习惯：当传输的变量超过
 2个时，用对象封装起来
+
+导入jquery时记得刷新一下maven，不然不起效，不要盲目检查路径
+
+js中的字符串需要append的时候，没有append方法，用+=实现append的效果
+
+js中的map用法在发布问题中有体现，概括一下：  
+增：set，删：delete，查：get
