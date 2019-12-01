@@ -19,7 +19,7 @@ public interface UserMapper {
      * @param user
      * @return
      */
-    @Insert("insert into user (name,account_id,token,gmt_create,gmt_modified) values (#{name},#{accountId},#{token},#{gmtCreate},#{gmtModified})")
+    @Insert("insert into user (name,account_id,token,gmt_create,gmt_modified,picture_url) values (#{name},#{accountId},#{token},#{gmtCreate},#{gmtModified},#{pictureUrl})")
     int insertUser(User user);
 
     /**
@@ -29,4 +29,12 @@ public interface UserMapper {
      */
     @Select("select * from user where token=#{token}")
     User selectUserByToken(String token);
+
+    /**
+     * 根据id查用户
+     * @return
+     * @param creator
+     */
+    @Select("select * from user where id=#{creator}")
+    User selectUserById(Integer creator);
 }

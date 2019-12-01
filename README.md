@@ -20,6 +20,8 @@ ctrl+x：剪切一整行
 
 ctrl+w：逐级选中
 
+alt+左右方向：切换已经打开的文件
+
 ---
 markdown有关知识：
 
@@ -36,3 +38,9 @@ js中的字符串需要append的时候，没有append方法，用+=实现append�
 
 js中的map用法在发布问题中有体现，概括一下：  
 增：set，删：delete，查：get
+
+标签有多个class用空格连接
+
+thymeleaf引用后端传来的变量的时候有红色下划线报错，实际上并没有错，在设置中关掉就行（expression variables）
+
+需要了解自动部署的方法可以看视频25集

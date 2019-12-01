@@ -51,8 +51,7 @@ public class GithubUtil {
             Response response = client.newCall(request).execute();
             //返回的是用户的信息的json格式字符串
             String jsonUser = response.body().string();
-            GithubUser githubUser = JSON.parseObject(jsonUser, GithubUser.class);
-            return githubUser;
+            return JSON.parseObject(jsonUser, GithubUser.class);
         } catch (IOException e) {
             e.printStackTrace();
         }

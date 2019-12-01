@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.UUID;
 
@@ -44,7 +43,6 @@ public class AuthorizeController {
     @GetMapping("/callback")
     public String callback(@RequestParam(value = "code") String code,
                            @RequestParam(value = "state") String state,
-                           HttpServletRequest request,
                            HttpServletResponse response){
 
         AccessTokenDTO accessTokenDTO = new AccessTokenDTO();
@@ -53,7 +51,7 @@ public class AuthorizeController {
         accessTokenDTO.setState(state);
         accessTokenDTO.setRedirect_uri(redirectUri);
         //这两个都是注册OAuth App生成的
-        accessTokenDTO.setClient_Id(clientId);
+        accessTokenDTO.setClient_id(clientId);
         accessTokenDTO.setClient_secret(clientSecret);
 
         String accessToken = githubUtil.getAccessToken(accessTokenDTO);
@@ -70,6 +68,7 @@ public class AuthorizeController {
             user.setToken(UUID.randomUUID().toString());
             user.setGmtCreate(System.currentTimeMillis());
             user.setGmtModified(user.getGmtCreate());
+            user.setPictureUrl(githubUser.getAvatar_url());
 
             int insertUserNo = userMapper.insertUser(user);
 

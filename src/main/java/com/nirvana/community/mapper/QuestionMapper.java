@@ -1,8 +1,9 @@
 package com.nirvana.community.mapper;
 
 import com.nirvana.community.model.Question;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.*;
+
+import java.util.List;
 
 /**
  * @program: community
@@ -20,4 +21,11 @@ public interface QuestionMapper {
      */
     @Insert("insert into question (title,description,tag,creator,gmt_create,gmt_modified) values(#{title},#{description},#{tag},#{creator},#{gmtCreate},#{gmtModified})")
     int insertQuestion(Question question);
+
+    /**
+     * 查询所有的问题
+     * @return
+     */
+    @Select("select * from question")
+    List<Question> selectAllQuestion();
 }

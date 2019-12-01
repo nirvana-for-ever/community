@@ -52,11 +52,12 @@ public class PublishController {
 
         int insertCpunt = questionMapper.insertQuestion(question);
 
+        //@TODO 添加错误响应的方式
         if (insertCpunt>0){
 
         }
 
-        return "publish";
+        return "index";
 
     }
 

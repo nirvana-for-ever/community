@@ -18,7 +18,7 @@
                     data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
                 <span class="sr-only"><span style="color:white;">昆卡社区</span></span>
             </button>
-            <a class="navbar-brand" href="#"><span style="color:white;">昆卡社区</span></a>
+            <a class="navbar-brand" href="/"><span style="color:white;">昆卡社区</span></a>
         </div>
 
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
@@ -72,7 +72,7 @@
                     <label for="tag">添加标签：</label><br>
                     <span id="tagSpan"></span>
                     <br><br>
-                    <input type="text" class="form-control" id="tag" placeholder="添加标签,空格添加.......">
+                    <input type="text" class="form-control" id="tag" placeholder="添加标签,回车添加.......">
                 </div>
                 <button onclick="submitQuestion()" class="btn btn-primary btn-lg active" style="float: right;">确认发布</button>
             </div>
@@ -104,7 +104,7 @@
 
     $(function(){
         $("#tag").bind("keypress",function(event){
-            if(event.keyCode == "32") {
+            if(event.keyCode == "13") {
                 var tag = $("#tag").val();
                 //h3标签默认换行，用css的display: inline可以让他不换行
                 $("#tagSpan").append("<span style='margin-outside: 20px;float: left' id="+i+"><h3 style='display: inline'><span class=\"label label-primary\">"+
