@@ -15,11 +15,10 @@ import java.io.IOException;
  * @create: 2019--11--28--13:51
  **/
 
-@Component
 public class GithubUtil {
 
     //使用okhttp的post请求
-    public String getAccessToken(AccessTokenDTO accessTokenDTO){
+    public static String getAccessToken(AccessTokenDTO accessTokenDTO){
 
         MediaType mediaType = MediaType.get("application/json; charset=utf-8");
 
@@ -42,7 +41,7 @@ public class GithubUtil {
     }
 
     //get请求
-    public GithubUser getUser(String accessToken){
+    public static GithubUser getUser(String accessToken){
         OkHttpClient client = new OkHttpClient();
 
         Request request = new Request.Builder().url("https://api.github.com/user?access_token="+accessToken).build();

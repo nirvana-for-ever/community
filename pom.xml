@@ -92,8 +92,17 @@
     </dependencies>
 
     <build>
-        <plugins>
 
+        <resources>
+            <resource>
+                <directory>src/main/java</directory>
+                <includes>
+                    <include>**/*.xml</include>
+                </includes>
+            </resource>
+        </resources>
+
+        <plugins>
             <!--flyway插件-->
             <plugin>
                 <groupId>org.flywaydb</groupId>
@@ -102,6 +111,17 @@
                     <url>jdbc:mysql://localhost:3306/community?useSSL=false&amp;serverTimezone=Hongkong&amp;characterEncoding=utf-8&amp;autoReconnect=true</url>
                     <user>root</user>
                     <password>595251308</password>
+                </configuration>
+            </plugin>
+
+            <!--myBatis逆向工程插件-->
+            <plugin>
+                <groupId>org.mybatis.generator</groupId>
+                <artifactId>mybatis-generator-maven-plugin</artifactId>
+                <version>1.3.2</version>
+                <configuration>
+                    <verbose>true</verbose>
+                    <overwrite>true</overwrite>
                 </configuration>
             </plugin>
 

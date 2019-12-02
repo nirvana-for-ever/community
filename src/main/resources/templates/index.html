@@ -71,6 +71,26 @@
                     <hr>
                 </div>
             </div>
+            <!--分页按钮-->
+            <nav aria-label="Page navigation" style="float: right">
+                <ul class="pagination">
+                    <li>
+                        <a href="/?order=start" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    <li><a th:href="@{'/?destinationPage='+${one}}" th:text="${one}"></a></li>
+                    <li><a th:href="@{'/?destinationPage='+${two}}" th:text="${two}"></a></li>
+                    <li><a th:href="@{'/?destinationPage='+${three}}" th:text="${three}"></a></li>
+                    <li><a th:href="@{'/?destinationPage='+${four}}" th:text="${four}"></a></li>
+                    <li><a th:href="@{'/?destinationPage='+${five}}" th:text="${five}"></a></li>
+                    <li>
+                        <a href="/?order=end" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
         </div>
         <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
             热门话题

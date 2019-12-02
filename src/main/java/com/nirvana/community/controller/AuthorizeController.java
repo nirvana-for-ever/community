@@ -5,6 +5,7 @@ import com.nirvana.community.dto.AccessTokenDTO;
 import com.nirvana.community.dto.GithubUser;
 import com.nirvana.community.mapper.UserMapper;
 import com.nirvana.community.model.User;
+import com.nirvana.community.service.AuthorizeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -25,9 +26,6 @@ import java.util.UUID;
 @Controller
 public class AuthorizeController {
 
-    @Autowired
-    private GithubUtil githubUtil;
-
     @Value("${github.client.id}")
     private String clientId;
 
@@ -39,6 +37,9 @@ public class AuthorizeController {
 
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private AuthorizeService authorizeService;
 
     @GetMapping("/callback")
     public String callback(@RequestParam(value = "code") String code,
@@ -54,29 +55,10 @@ public class AuthorizeController {
         accessTokenDTO.setClient_id(clientId);
         accessTokenDTO.setClient_secret(clientSecret);
 
-        String accessToken = githubUtil.getAccessToken(accessTokenDTO);
+        User user = authorizeService.getToken(accessTokenDTO);
 
-        GithubUser githubUser = githubUtil.getUser(accessToken);
-
-        if (null != githubUser) {
-
-            //将用户存到数据库中
-            User user = new User();
-            user.setName(githubUser.getName());
-            user.setAccountId(githubUser.getId());
-            //随机创建一个值,后面用作cookie的值，实现判断用户是否已经登录
-            user.setToken(UUID.randomUUID().toString());
-            user.setGmtCreate(System.currentTimeMillis());
-            user.setGmtModified(user.getGmtCreate());
-            user.setPictureUrl(githubUser.getAvatar_url());
-
-            int insertUserNo = userMapper.insertUser(user);
-
-            if (insertUserNo > 0){
-                //添加用户成功后，将用户的token添加到cookie中
-                response.addCookie(new Cookie("token",user.getToken()));
-            }
-
+        if (null != user) {
+            response.addCookie(new Cookie("token",user.getToken()));
             return "redirect:/";
         }else {
             //登录失败@TODO

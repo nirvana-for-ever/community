@@ -44,3 +44,5 @@ js中的map用法在发布问题中有体现，概括一下：
 thymeleaf引用后端传来的变量的时候有红色下划线报错，实际上并没有错，在设置中关掉就行（expression variables）
 
 需要了解自动部署的方法可以看视频25集
+
+ajax不支持重定向，在后端无法return一个页面，因此需要在ajax的success函数内重定向window.location="指定页面地址"
