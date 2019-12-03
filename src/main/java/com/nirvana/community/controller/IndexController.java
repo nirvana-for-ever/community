@@ -61,7 +61,7 @@ public class IndexController {
 
         if ("start".equals(order)){
             index = 0;
-            destinationPage = 0;
+            destinationPage = 1;
         }else if ("end".equals(order)){
             index = (questionCount / each) * each;
             destinationPage = lastPage;
@@ -77,24 +77,36 @@ public class IndexController {
 
         //由于前端页面展示的样式是（首页，上两页，上一页，当前页，下一页，下两页，尾页），当当前页为第一页时，就变成（首页，当前页，下一页，下两页，下三页，下四页，尾页）
         //所以需要判断当前处在的页面是不是处于前2页，或者是倒数2页
-        if (destinationPage<=3){
+        //@TODO 用前端的分页插件实现分页
+        if (destinationPage<3){
             model.addAttribute("one",1);
             model.addAttribute("two",2);
             model.addAttribute("three",3);
             model.addAttribute("four",4);
             model.addAttribute("five",5);
-        }else if (destinationPage>=lastPage-2){
+            if (destinationPage==1){
+                model.addAttribute("current",1);
+            }else if (destinationPage==2){
+                model.addAttribute("current",2);
+            }
+        }else if (destinationPage>lastPage-2){
             model.addAttribute("one",lastPage-4);
             model.addAttribute("two",lastPage-3);
             model.addAttribute("three",lastPage-2);
             model.addAttribute("four",lastPage-1);
             model.addAttribute("five",lastPage);
+            if (destinationPage==lastPage-1){
+                model.addAttribute("current",lastPage-1);
+            }else if (destinationPage==lastPage){
+                model.addAttribute("current",lastPage);
+            }
         }else {
             model.addAttribute("one",destinationPage-2);
             model.addAttribute("two",destinationPage-1);
             model.addAttribute("three",destinationPage);
             model.addAttribute("four",destinationPage+1);
             model.addAttribute("five",destinationPage+2);
+            model.addAttribute("current",destinationPage);
         }
         //展示问题还需要问题的发起人的名字，头像，所以将用户和问题一起传给前端
         List<ShowQuestion> showQuestions = new ArrayList<>();
