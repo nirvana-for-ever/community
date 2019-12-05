@@ -74,4 +74,11 @@ public interface QuestionMapper {
      * @return
      */
     Integer selectQuestionCount();
+
+    /**
+     * 根据作者查找问题数量
+     * @param creator
+     * @return
+     */
+    Integer selectQuestionCountByCreator(Integer creator);
 }

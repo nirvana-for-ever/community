@@ -38,4 +38,8 @@ public class IndexService {
     public User queryUserByCreator(Integer id) {
         return userMapper.selectByPrimaryKey(id);
     }
+
+    public Integer queryQuestionCount(Integer creator) {
+        return questionMapper.selectQuestionCountByCreator(creator);
+    }
 }

@@ -1,27 +1,30 @@
-package com.nirvana.community.service;
+package com.nirvana.community.interceptor;
 
 import com.nirvana.community.mapper.UserMapper;
 import com.nirvana.community.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.HandlerInterceptor;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * @program: community
- * @description: 判断是否登录
+ * @description: 登录拦截器
  * @author: Nirvana
- * @create: 2019--12--02--12:37
+ * @create: 2019--12--05--13:38
  **/
-@Service
-public class IsLoginService {
+@Component
+public class LoginInterceptor implements HandlerInterceptor {
 
     @Autowired
     private UserMapper userMapper;
 
-    public Boolean isLogin(HttpServletRequest request){
-
+    @Override
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         Cookie[] cookies = request.getCookies();
 
         String token = null;
@@ -43,4 +46,14 @@ public class IsLoginService {
         }
     }
 
+    //@TODO 如果没登录跳转到登录页
+    @Override
+    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
+
+    }
+
+    @Override
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+
+    }
 }

@@ -201,12 +201,21 @@
   <select id="selectQuestionByPage" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
-    from question limit #{index},#{each}
+    from question
+    <if test="creator!=0">
+        where creator=#{creator}
+    </if>
+    limit #{index},#{each}
   </select>
 
   <!--总问题数-->
   <select id="selectQuestionCount" resultType="java.lang.Integer">
     select count(*) from question
+  </select>
+  
+<!--根据作者查找问题数量-->
+  <select id="selectQuestionCountByCreator" resultType="java.lang.Integer">
+    select count(*) from question where #{creator}=creator
   </select>
 
 </mapper>

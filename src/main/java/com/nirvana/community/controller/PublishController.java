@@ -4,7 +4,6 @@ import com.nirvana.community.mapper.QuestionMapper;
 import com.nirvana.community.mapper.UserMapper;
 import com.nirvana.community.model.Question;
 import com.nirvana.community.model.User;
-import com.nirvana.community.service.IsLoginService;
 import com.nirvana.community.service.PublishService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -32,14 +31,10 @@ public class PublishController {
     @Autowired
     private PublishService publishService;
 
-    @Autowired
-    private IsLoginService isLoginService;
-
     //当get访问时，跳转到发布问题的页面
     @GetMapping("/publish")
     public String toPublish(HttpServletRequest request){
 
-        isLoginService.isLogin(request);
         return "publish";
 
     }
@@ -52,7 +47,6 @@ public class PublishController {
                           HttpServletRequest request){
 
         //@TODO 做一个拦截器，判断用户是否登录，有登录才能发布问题
-        isLoginService.isLogin(request);
         User user = (User) request.getSession().getAttribute("user");
 
         Question question = new Question();

@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="/css/bootstrap-theme.min.css">
     <script src="/js/jquery-3.4.1.min.js" type="text/javascript"></script>
     <script src="/js/bootstrap.min.js" type="application/javascript"></script>
-    <title>昆卡社区</title>
+    <title th:text="${title}"></title>
 </head>
 <body background="/img/background.PNG">
 
@@ -17,7 +17,7 @@
     <div class="row">
         <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
             <div>
-                <h2 class="glyphicon glyphicon-list"><span>&nbsp;发现</span></h2>
+                <h2 class="glyphicon glyphicon-hand-down"><span th:text="${title}"></span></h2>
                 <hr>
                 <div class="media" th:each="showQuestion : ${showQuestions}">
                     <div class="media-left">
@@ -36,17 +36,17 @@
             <nav aria-label="Page navigation" style="float: right">
                 <ul class="pagination" th:id="${current}">
                     <li th:if="${showStart}">
-                        <a href="/?order=start" aria-label="Previous">
+                        <a th:href="@{'/profile/'+${action}+'?order=start'}" aria-label="Previous">
                             <span aria-hidden="true">&laquo;</span>
                         </a>
                     </li>
-                    <li th:if="${pages[0]!=null}" th:id="${pages[0]}"><a th:href="@{'/?destinationPage='+${pages[0]}}" th:text="${pages[0]}"></a></li>
-                    <li th:if="${pages[1]!=null}" th:id="${pages[1]}"><a th:href="@{'/?destinationPage='+${pages[1]}}" th:text="${pages[1]}"></a></li>
-                    <li th:if="${pages[2]!=null}" th:id="${pages[2]}"><a th:href="@{'/?destinationPage='+${pages[2]}}" th:text="${pages[2]}"></a></li>
-                    <li th:if="${pages[3]!=null}" th:id="${pages[3]}"><a th:href="@{'/?destinationPage='+${pages[3]}}" th:text="${pages[3]}"></a></li>
-                    <li th:if="${pages[4]!=null}" th:id="${pages[4]}"><a th:href="@{'/?destinationPage='+${pages[4]}}" th:text="${pages[4]}"></a></li>
+                    <li th:if="${pages[0]!=null}" th:id="${pages[0]}"><a th:href="@{'/profile/'+${action}+'?destinationPage='+${pages[0]}}" th:text="${pages[0]}"></a></li>
+                    <li th:if="${pages[1]!=null}" th:id="${pages[1]}"><a th:href="@{'/profile/'+${action}+'?destinationPage='+${pages[1]}}" th:text="${pages[1]}"></a></li>
+                    <li th:if="${pages[2]!=null}" th:id="${pages[2]}"><a th:href="@{'/profile/'+${action}+'?destinationPage='+${pages[2]}}" th:text="${pages[2]}"></a></li>
+                    <li th:if="${pages[3]!=null}" th:id="${pages[3]}"><a th:href="@{'/profile/'+${action}+'?destinationPage='+${pages[3]}}" th:text="${pages[3]}"></a></li>
+                    <li th:if="${pages[4]!=null}" th:id="${pages[4]}"><a th:href="@{'/profile/'+${action}+'?destinationPage='+${pages[4]}}" th:text="${pages[4]}"></a></li>
                     <li th:if="${showEnd}">
-                        <a href="/?order=end" aria-label="Next">
+                        <a th:href="@{'/profile/'+${action}+'?order=end'}" aria-label="Next">
                             <span aria-hidden="true">&raquo;</span>
                         </a>
                     </li>
@@ -54,7 +54,7 @@
             </nav>
         </div>
         <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
-            热门话题
+            为什么？？
         </div>
     </div>
 </div>
@@ -69,4 +69,5 @@
 
     })
 </script>
+
 </html>
