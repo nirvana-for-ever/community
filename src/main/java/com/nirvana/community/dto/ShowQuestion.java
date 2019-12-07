@@ -11,11 +11,17 @@ import lombok.Data;
 @Data
 public class ShowQuestion {
 
-    private String pictureUrl;
-    private String name;
+    //问题
     private Integer commentCount;
     private Integer readCount;
     private String title;
     private Long gmtCreate;
+    private String description;
+    private int questionId;
+
+    //用户
+    private String pictureUrl;
+    private String name;
+
 
 }

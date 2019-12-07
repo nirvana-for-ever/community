@@ -108,6 +108,7 @@ public class PaginationUtil {
                     //这个工具类的方法作用：将question的属性自动copy到showQuestion上，就不用一个一个set了
                     BeanUtils.copyProperties(question, showQuestion);
                     BeanUtils.copyProperties(user,showQuestion);
+                    showQuestion.setQuestionId(question.getId());
                     showQuestions.add(showQuestion);
                 }
             }

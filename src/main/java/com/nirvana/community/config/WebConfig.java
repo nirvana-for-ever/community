@@ -16,7 +16,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class WebConfig implements WebMvcConfigurer {
 
     //不拦截路径
-    private String[] excludePathPatterns = {"/","/callback","/js/**","/css/**","/img/**","/fonts/**"};
+    private String[] excludePathPatterns = {"/","/callback","/js/**","/css/**","/img/**","/fonts/**","/user/**"};
     //需要拦截路径
     private String[] pathPatterns = {"/**"};
 

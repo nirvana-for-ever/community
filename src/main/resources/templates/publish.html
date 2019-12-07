@@ -36,6 +36,7 @@
                     <br><br>
                     <input type="text" class="form-control" id="tag" placeholder="添加标签,回车添加.......">
                 </div>
+                <div id="warning" class="alert alert-danger" role="alert" style="display: none"></div>
                 <button onclick="submitQuestion()" class="btn btn-primary btn-lg active" style="float: right;">确认发布</button>
             </div>
             <br><br><br>
@@ -67,7 +68,7 @@
     $(function(){
         $("#tag").bind("keypress",function(event){
             if(event.keyCode == "13") {
-                var tag = $("#tag").val();
+                var tag = $.trim($("#tag").val());
                 //h3标签默认换行，用css的display: inline可以让他不换行
                 $("#tagSpan").append("<span style='margin-outside: 20px;float: left' id="+i+"><h3 style='display: inline'><span class=\"label label-primary\">"+
                     tag+"&nbsp;<span class=\"glyphicon glyphicon-remove\" aria-hidden=\"true\" onclick=\"deleteTag("+i+")\"></span></span></h3><span>&nbsp;&nbsp;</span></span>");
@@ -85,10 +86,8 @@
 
     function submitQuestion() {
 
-        //@TODO 做一下判断输入框不能为空，后台也需要判断
-
-        var title = $("#title").val();
-        var description = $("#description").val();
+        var title = $.trim($("#title").val());
+        var description = $.trim($("#description").val());
         var a = 1;
         var tag = "";
         while (a < i) {
@@ -100,18 +99,30 @@
             }
             a++;
         }
-        $.ajax({
-            url:"/publish",
-            type:"post",
-            data: {
-                title: title,
-                description: description,
-                tag: tag
-            },
-            success:function () {
-                window.location="http://localhost:8887/";
-            }
-        });
+        if (title!=""&&description!=""&&tag!=""){
+            $.ajax({
+                url:"/publish",
+                type:"post",
+                data: {
+                    title: title,
+                    description: description,
+                    tag: tag
+                },
+                success:function (msg) {
+                    if (msg=="OK"){
+                        window.location="http://localhost:8887/";
+                    }else {
+                        alert("失败");
+                    }
+                },
+                error:function () {
+                    alert("失败");
+                }
+            });
+        }else {
+            $("#warning").show();
+            $("#warning").html("请检查标题，内容，标签，不能为空");
+        }
     }
 
 </script>

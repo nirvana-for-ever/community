@@ -60,4 +60,24 @@ public interface UserMapper {
      */
     User selectUserByToken(String token);
 
+    /**
+     * 根据账户id查询用户
+     * @param id
+     * @return
+     */
+    User selectByAccountId(String id);
+
+    /**
+     * 根据用户名查询用户
+     * @param name
+     * @return
+     */
+    User selectByName(String name);
+
+    /**
+     * 根据用户名密码判断用户是否输入正确
+     * @param user
+     * @return
+     */
+    User selectByNameAndPassword(User user);
 }

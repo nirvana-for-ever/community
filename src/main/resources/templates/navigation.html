@@ -26,12 +26,12 @@
                 </form>
                 <ul class="nav navbar-nav navbar-right">
                     <li th:if="${session.user== null}">
-                        <a href="https://github.com/login/oauth/authorize?client_id=fa18c789f9de7091517f&redirect_uri=http://localhost:8887/callback&scope=user&state=2">
+                        <a th:href="@{/user/login}">
                             <span style="color:white;">登录</span>
                         </a>
                     </li>
                     <li th:if="${session.user!= null}">
-                        <h4>
+                        <h4 style="margin-top: 14px">
                             <a style="display: inline;" class="glyphicon glyphicon-edit" th:href="@{/publish}"></a><span style="color:white;">发布</span>&nbsp;&nbsp;
                         </h4>
                     </li>
@@ -42,8 +42,7 @@
                         </a>
                         <ul class="dropdown-menu">
                             <li><a href="/profile/questions">我的问题</a></li>
-                            <li><a href="#">个人资料</a></li>
-                            <li><a href="#">退出登录</a></li>
+                            <li><a href="/user/logout">退出登录</a></li>
                         </ul>
                     </li>
                 </ul>

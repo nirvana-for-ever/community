@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -41,12 +42,12 @@ public class PublishController {
 
     //当以post方式访问的时候，做提交问题，两种路径一样但方式不同
     @PostMapping("/publish")
-    public void publish(@RequestParam(value = "title") String title,
+    @ResponseBody
+    public String publish(@RequestParam(value = "title") String title,
                           @RequestParam(value = "description") String description,
                           @RequestParam(value = "tag") String tag,
                           HttpServletRequest request){
 
-        //@TODO 做一个拦截器，判断用户是否登录，有登录才能发布问题
         User user = (User) request.getSession().getAttribute("user");
 
         Question question = new Question();
@@ -59,10 +60,11 @@ public class PublishController {
 
         int addCount = publishService.addQuestion(question);
 
-        //@TODO 添加错误响应的方式
-//        if (addCpunt>0){
-//
-//        }
+        if (addCount>0){
+            return "OK";
+        }else {
+            return null;
+        }
 
     }
 

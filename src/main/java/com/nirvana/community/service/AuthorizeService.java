@@ -23,7 +23,7 @@ public class AuthorizeService {
     @Autowired
     private UserMapper userMapper;
 
-    public User getToken(AccessTokenDTO accessTokenDTO) {
+    public User getUser(AccessTokenDTO accessTokenDTO) {
 
         String accessToken = GithubUtil.getAccessToken(accessTokenDTO);
 
@@ -31,24 +31,45 @@ public class AuthorizeService {
 
         if (null != githubUser) {
 
-            //将用户存到数据库中
-            User user = new User();
-            user.setName(githubUser.getName());
-            user.setAccountId(githubUser.getId());
-            //随机创建一个值,后面用作cookie的值，实现判断用户是否已经登录
-            user.setToken(UUID.randomUUID().toString());
-            user.setGmtCreate(System.currentTimeMillis());
-            user.setGmtModified(user.getGmtCreate());
-            user.setPictureUrl(githubUser.getAvatar_url());
+            //判断用户是否已经在数据库中认证过
+            User eUser = userMapper.selectByAccountId(githubUser.getId());
+            if (null == eUser) {
+                //该用户是新用户
+                //将用户存到数据库中
+                User user = new User();
+                user.setName(githubUser.getName());
+                user.setBio(githubUser.getBio());
+                user.setAccountId(githubUser.getId());
+                //随机创建一个值,后面用作cookie的值，实现判断用户是否已经登录
+                user.setToken(UUID.randomUUID().toString());
+                user.setGmtCreate(System.currentTimeMillis());
+                user.setGmtModified(user.getGmtCreate());
+                user.setPictureUrl(githubUser.getAvatar_url());
 
-            int insertUserNo = userMapper.insertSelective(user);
+                int insertUserCount = userMapper.insertSelective(user);
 
-            if (insertUserNo > 0){
-                //添加用户成功后，将用户的token添加到cookie中
-                return user;
+                if (insertUserCount > 0){
+                    //添加用户成功后，将用户的token添加到cookie中
+                    return user;
+                }else {
+                    return null;
+                }
             }else {
-                return null;
+                //该用户之前认证过
+                //修改该用户的修改时间和token即可
+                eUser.setGmtModified(System.currentTimeMillis());
+                eUser.setToken(UUID.randomUUID().toString());
+
+                int updateCount = userMapper.updateByPrimaryKeySelective(eUser);
+
+                if (updateCount>0){
+                    //修改成功
+                    return eUser;
+                }else {
+                    return null;
+                }
             }
+
         }else {
             return null;
         }
