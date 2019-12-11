@@ -4,6 +4,7 @@ import com.nirvana.community.model.User;
 import com.nirvana.community.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -26,7 +27,20 @@ public class UserController {
     private UserService userService;
 
     @GetMapping("/user/login")
-    public String toLogin(){
+    public String toLogin(HttpServletRequest request, Model model){
+
+        //获取浏览器cookie，判断是否有记住账户密码的用户
+        Cookie[] cookies = request.getCookies();
+
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("name")) {
+                    model.addAttribute("name",cookie.getValue());
+                }else if (cookie.getName().equals("password")){
+                    model.addAttribute("password",cookie.getValue());
+                }
+            }
+        }
         return "login";
     }
 
@@ -34,6 +48,7 @@ public class UserController {
     @ResponseBody
     public String login(@RequestParam(value = "name")String name,
                         @RequestParam(value = "password")String password,
+                        @RequestParam(value = "rem")Boolean rem,
                         HttpServletResponse response,
                         HttpServletRequest request){
 
@@ -51,6 +66,18 @@ public class UserController {
                 if (null != user) {
                     response.addCookie(new Cookie("token",user.getToken()));
                     request.getSession().setAttribute("user", user);
+
+                    //是否要求记住用户名密码
+                    if (rem){
+                        Cookie nameCookie = new Cookie("name",name);
+                        Cookie passwordCookie = new Cookie("password",password);
+                        //保留1年
+                        nameCookie.setMaxAge(60*60*24*365);
+                        passwordCookie.setMaxAge(60*60*24*365);
+                        response.addCookie(nameCookie);
+                        response.addCookie(passwordCookie);
+                    }
+
                     return "OK";
                 }else {
                     return null;
@@ -99,12 +126,13 @@ public class UserController {
     }
 
     @GetMapping("/user/logout")
-    public String logout(HttpServletRequest request){
+    public String logout(HttpServletRequest request,HttpServletResponse response){
 
-        User user = (User) request.getSession().getAttribute("user");
-        user.setToken("");
-        userService.logout(user);
-
+        //删除浏览器的cookie值
+        Cookie cookie = new Cookie("token",null);
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+        //删除session中的user
         request.getSession().removeAttribute("user");
 
         return "redirect:/";

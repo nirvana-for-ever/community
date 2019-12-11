@@ -15,12 +15,12 @@
         <div class="col-lg-8 col-md-12 col-sm-12 col-xs-12">
             <h3>昆卡社区</h3>
             <div style="margin: 50px;">
-                <input id="name" type="text" class="form-control" placeholder="用户名...." onblur="check()">
+                <input th:value="${name}" id="name" type="text" class="form-control" placeholder="用户名...." onblur="check()">
                 <br>
-                <input id="password" type="password" class="form-control" placeholder="密码...." onblur="check()">
+                <input th:value="${password}" id="password" type="password" class="form-control" placeholder="密码...." onblur="check()">
                 <div class="checkbox">
                     <label>
-                        <input type="checkbox"> 记住账户密码
+                        <input id="rem" type="checkbox"> 记住账户密码
                     </label>
                 </div>
                 <div id="warning" role="alert" class="alert alert-danger" style="display: none"></div>
@@ -64,13 +64,16 @@
     function login() {
         var name = $.trim($("#name").val());
         var password = $.trim($("#password").val());
+        //获取复选框是否选中
+        var rem = $("#rem").prop("checked");
         if (check()){
             $.ajax({
                 url:"/user/login",
                 type:"post",
                 data:{
                     name:name,
-                    password:password
+                    password:password,
+                    rem:rem
                 },
                 success:function (msg) {
                     if (msg=="OK"){

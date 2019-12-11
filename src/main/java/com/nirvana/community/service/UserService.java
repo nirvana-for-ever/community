@@ -51,8 +51,4 @@ public class UserService {
         return userMapper.updateByPrimaryKeySelective(lUser);
 
     }
-
-    public void logout(User user) {
-        userMapper.updateByPrimaryKeySelective(user);
-    }
 }
