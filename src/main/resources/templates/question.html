@@ -5,6 +5,8 @@
     <link rel="stylesheet" href="/css/bootstrap.min.css">
     <link rel="stylesheet" href="/css/bootstrap-theme.min.css">
     <script src="/js/jquery-3.4.1.min.js" type="text/javascript"></script>
+    <script src="/js/jquery.cookie.js" type="text/javascript"></script>
+    <script src="/js/my.js" type="text/javascript"></script>
     <script src="/js/bootstrap.min.js" type="application/javascript"></script>
     <title th:text="${showQuestion.title}"></title>
 </head>
@@ -18,12 +20,12 @@
         <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
             <div>
                 <h2 th:text="${showQuestion.title}"></h2>
-                作者 <span th:text="${showQuestion.name}+'|发布于'+${#dates.format(showQuestion.gmtCreate, 'yyyy-MM-dd HH:mm')}+'|阅读数'+${showQuestion.readCount}"></span>
+                作者 <span th:text="${showQuestion.name}+' | 发布于'+${#dates.format(showQuestion.gmtCreate, 'yyyy-MM-dd HH:mm')}+' | 阅读数'+${showQuestion.readCount}"></span>
                 <hr>
                 <span th:text="${showQuestion.description}"></span>
                 <hr>
                 <div th:if="${session.user!=null}">
-                    <a th:if="${session.user.getName()==showQuestion.name}" class="glyphicon glyphicon-pencil" style="color: gray">编辑</a>
+                    <a th:if="${session.user.getName()==showQuestion.name}" th:href="@{'/publish/'+${showQuestion.questionId}}" class="glyphicon glyphicon-pencil" style="color: gray">编辑</a>
                 </div>
             </div>
         </div>

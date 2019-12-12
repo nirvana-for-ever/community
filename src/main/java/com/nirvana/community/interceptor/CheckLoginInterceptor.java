@@ -7,41 +7,50 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
  * @program: community
- * @description: 登录拦截器
+ * @description: 拦截所有的请求，根据cookie值将已经登录的用户添加到session中
  * @author: Nirvana
- * @create: 2019--12--05--13:38
+ * @create: 2019--12--12--13:38
  **/
 @Component
-public class LoginInterceptor implements HandlerInterceptor {
+public class CheckLoginInterceptor implements HandlerInterceptor {
 
     @Autowired
     private UserMapper userMapper;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        Cookie[] cookies = request.getCookies();
 
-        User user = (User) request.getSession().getAttribute("user");
+        String token = null;
 
-        if (null == user) {
-            //如果没登录，跳转到登录页面
-            response.sendRedirect("/user/login");
-            return false;
-        }else {
-            return true;
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("token")) {
+                    token = cookie.getValue();
+                }
+            }
+            //查询是哪个用户已经登录,给他添加到session中
+            User user = userMapper.selectUserByToken(token);
+            if (null != user) {
+                request.getSession().setAttribute("user", user);
+            }
         }
+        return true;
     }
 
-    //@TODO 如果没登录跳转到登录页
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
+
     }
 
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+
     }
 }

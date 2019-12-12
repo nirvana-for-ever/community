@@ -22,7 +22,12 @@ public class PublishService {
      * @param question
      * @return
      */
-    public int addQuestion(Question question) {
-        return questionMapper.insertSelective(question);
+    public int addOrModifiedQuestion(Question question) {
+
+        if (question.getId()!=0){
+            return questionMapper.updateByPrimaryKeySelective(question);
+        }else {
+            return questionMapper.insertSelective(question);
+        }
     }
 }

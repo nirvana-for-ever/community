@@ -1,5 +1,6 @@
 package com.nirvana.community.config;
 
+import com.nirvana.community.interceptor.CheckLoginInterceptor;
 import com.nirvana.community.interceptor.LoginInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,11 +17,15 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class WebConfig implements WebMvcConfigurer {
 
     //不拦截路径
-    private String[] excludePathPatterns = {"/","/callback","/js/**","/css/**","/img/**","/fonts/**","/user/**"};
+    private String[] excludePathPatterns = {"/","/callback","/js/**","/css/**","/img/**","/fonts/**","/user/**","/question/**"};
     //需要拦截路径
     private String[] pathPatterns = {"/**"};
 
     //将拦截器放入spring容器中管理
+    @Bean
+    public CheckLoginInterceptor getCheckLoginInterceptor(){
+        return new CheckLoginInterceptor();
+    }
     @Bean
     public LoginInterceptor getLoginInterceptor(){
         return new LoginInterceptor();
@@ -28,6 +33,11 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
+
+        //多个拦截器的执行顺序：拦截器加入的顺序就是执行的顺序
+
+        registry.addInterceptor(this.getCheckLoginInterceptor()).addPathPatterns(pathPatterns);
+
         registry.addInterceptor(this.getLoginInterceptor()).addPathPatterns(pathPatterns).excludePathPatterns(excludePathPatterns);
     }
 }

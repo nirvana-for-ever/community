@@ -18,6 +18,7 @@ public class ShowQuestion {
     private Long gmtCreate;
     private String description;
     private int questionId;
+    private String tag;
 
     //用户
     private String pictureUrl;

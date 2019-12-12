@@ -5,10 +5,12 @@
     <link rel="stylesheet" href="/css/bootstrap.min.css">
     <link rel="stylesheet" href="/css/bootstrap-theme.min.css">
     <script src="/js/jquery-3.4.1.min.js" type="text/javascript"></script>
+    <script src="/js/jquery.cookie.js" type="text/javascript"></script>
+    <script src="/js/my.js" type="text/javascript"></script>
     <script src="/js/bootstrap.min.js" type="application/javascript"></script>
     <title>发布~~昆卡社区</title>
 </head>
-<body background="img/background.PNG">
+<body background="/img/background.PNG">
 
 <!--引用导航条navigation.html-->
 <div th:insert="~{navigation :: nav}"/>
@@ -22,19 +24,21 @@
                 <hr><!--分割线-->
                 <!--描述问题-->
                 <div class="form-group">
+                    <!--hidden的输入框存放问题的id，作为判断是修改问题还是创建新问题-->
+                    <input id="qId" type="hidden" th:value="${id}">
                     <label for="title">问题标题（简单扼要）：</label>
-                    <input type="text" class="form-control" id="title" name="title" placeholder="问题标题">
+                    <input type="text" class="form-control" id="title" name="title" placeholder="问题标题" th:value="${title}">
                 </div>
                 <div class="form-group">
                     <label for="title">问题补充（必填，参照右边提示）：</label>
                     <textarea class="form-control" cols="30" rows="10" id="description"
-                              name="description"></textarea>
+                              name="description" th:text="${description}"></textarea>
                 </div>
                 <div class="form-group">
                     <label for="tag">添加标签：</label><br>
                     <span id="tagSpan"></span>
                     <br><br>
-                    <input type="text" class="form-control" id="tag" placeholder="添加标签,回车添加.......">
+                    <input type="text" class="form-control" id="tag" placeholder="添加标签,回车添加......." th:value="${tag}">
                 </div>
                 <div id="warning" class="alert alert-danger" role="alert" style="display: none"></div>
                 <button onclick="submitQuestion()" class="btn btn-primary btn-lg active" style="float: right;">确认发布</button>
@@ -90,6 +94,7 @@
         var description = $.trim($("#description").val());
         var a = 1;
         var tag = "";
+        var id = $("#qId").val();
         while (a < i) {
             if (tags.get(a) !== undefined) {
                 tag += tags.get(a);
@@ -106,7 +111,8 @@
                 data: {
                     title: title,
                     description: description,
-                    tag: tag
+                    tag: tag,
+                    id:id
                 },
                 success:function (msg) {
                     if (msg=="OK"){

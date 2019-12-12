@@ -77,3 +77,5 @@ myBatis-plus异常提示For input string: "{0=null}"
 spring是无法自动注入bean的，所以为null  
 解决办法：通过@bean注解注入拦截器到spring当中,同时给拦截器加上@compent注解，
 参照WebConfig
+
+引入js文件的时候，如果a.js要用到b.js中的方法的话，b.js的引用需要放在a.js的前面

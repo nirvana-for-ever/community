@@ -64,7 +64,9 @@ public class UserController {
             if (modifiedCount>0){
                 User user = userService.queryUserByName(lUser.getName());
                 if (null != user) {
-                    response.addCookie(new Cookie("token",user.getToken()));
+                    Cookie cookie = new Cookie("token",user.getToken());
+                    cookie.setPath("/");
+                    response.addCookie(cookie);
                     request.getSession().setAttribute("user", user);
 
                     //是否要求记住用户名密码
@@ -126,16 +128,9 @@ public class UserController {
     }
 
     @GetMapping("/user/logout")
-    public String logout(HttpServletRequest request,HttpServletResponse response){
-
-        //删除浏览器的cookie值
-        Cookie cookie = new Cookie("token",null);
-        cookie.setMaxAge(0);
-        response.addCookie(cookie);
+    public void logout(HttpServletRequest request,HttpServletResponse response){
         //删除session中的user
         request.getSession().removeAttribute("user");
-
-        return "redirect:/";
     }
 
 }

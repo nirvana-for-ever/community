@@ -31,8 +31,10 @@ public class QuestionService {
         User user = userMapper.selectByPrimaryKey(question.getCreator());
 
         ShowQuestion showQuestion = new ShowQuestion();
-        BeanUtils.copyProperties(question,showQuestion);
         BeanUtils.copyProperties(user,showQuestion);
+        BeanUtils.copyProperties(question,showQuestion);
+        //由于showquestion中question的id变量名与Question中的不一样，所以需要手动set
+        showQuestion.setQuestionId(question.getId());
 
         return showQuestion;
     }
