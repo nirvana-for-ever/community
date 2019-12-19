@@ -17,10 +17,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class WebConfig implements WebMvcConfigurer {
 
     //不拦截路径
-    private String[] excludePathPatterns = {"/","/callback","/js/**","/css/**","/img/**","/fonts/**","/user/**","/question/**"};
+    private String[] excludePathPatterns = {""};
     //需要拦截路径
-    private String[] pathPatterns = {"/**"};
-
+    private String[] pathPatternsLogin = {"/**"};
+    private String[] pathPatterns = {"/publish**/**","/profile/questions**"};
     //将拦截器放入spring容器中管理
     @Bean
     public CheckLoginInterceptor getCheckLoginInterceptor(){
@@ -36,7 +36,7 @@ public class WebConfig implements WebMvcConfigurer {
 
         //多个拦截器的执行顺序：拦截器加入的顺序就是执行的顺序
 
-        registry.addInterceptor(this.getCheckLoginInterceptor()).addPathPatterns(pathPatterns);
+        registry.addInterceptor(this.getCheckLoginInterceptor()).addPathPatterns(pathPatternsLogin);
 
         registry.addInterceptor(this.getLoginInterceptor()).addPathPatterns(pathPatterns).excludePathPatterns(excludePathPatterns);
     }

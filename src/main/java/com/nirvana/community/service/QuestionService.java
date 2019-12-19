@@ -1,6 +1,8 @@
 package com.nirvana.community.service;
 
+import com.nirvana.community.common.Constants;
 import com.nirvana.community.dto.ShowQuestion;
+import com.nirvana.community.exception.CustomizeException;
 import com.nirvana.community.mapper.QuestionMapper;
 import com.nirvana.community.mapper.UserMapper;
 import com.nirvana.community.model.Question;
@@ -27,9 +29,12 @@ public class QuestionService {
     public ShowQuestion queryQuestionById(int id) {
 
         Question question = questionMapper.selectByPrimaryKey(id);
+        if (null == question) {
+            //自定义的异常
+            throw new CustomizeException(Constants.QUESTION_NOT_FOUND);
+        }
 
         User user = userMapper.selectByPrimaryKey(question.getCreator());
-
         ShowQuestion showQuestion = new ShowQuestion();
         BeanUtils.copyProperties(user,showQuestion);
         BeanUtils.copyProperties(question,showQuestion);
