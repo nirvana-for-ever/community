@@ -24,7 +24,12 @@ public class QuestionController {
     public String question(@PathVariable("id") int id,
                            Model model){
 
-        ShowQuestion showQuestion = questionService.queryQuestionById(id);
+        ShowQuestion showQuestion = questionService.queryQuestionById(id,true);
+
+        //判断查询回来的问题是否为空，如果不为空，则说明有找到该问题，将该问题的浏览量加1
+        if (null != showQuestion) {
+
+        }
 
         model.addAttribute("showQuestion",showQuestion);
 

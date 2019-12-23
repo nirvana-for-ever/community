@@ -46,7 +46,7 @@ public class PublishController {
     public String edit(@PathVariable(value = "id")Integer id,
                        Model model){
 
-        ShowQuestion showQuestion = questionService.queryQuestionById(id);
+        ShowQuestion showQuestion = questionService.queryQuestionById(id,false);
         model.addAttribute("id",showQuestion.getQuestionId());
         model.addAttribute("title",showQuestion.getTitle());
         model.addAttribute("description",showQuestion.getDescription());
