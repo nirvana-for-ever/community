@@ -79,3 +79,9 @@ spring是无法自动注入bean的，所以为null
 参照WebConfig
 
 引入js文件的时候，如果a.js要用到b.js中的方法的话，b.js的引用需要放在a.js的前面
+
+requestbody中使用大小写会出现无法映射的问题
+https://blog.csdn.net/qq_26075861/article/details/54016591
+
+postman:https://getman.cn/  
+如何给谷歌使用postman：https://blog.csdn.net/dearwind153/article/details/52235749
