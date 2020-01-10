@@ -14,7 +14,15 @@ public class ResultDTO {
     private Integer code;
     private String msg;
 
-    public static ResultDTO getResult(Integer code,String msg){
+    public Integer getCode() {
+        return code;
+    }
+
+    public String getMsg() {
+        return msg;
+    }
+
+    public static ResultDTO getResult(Integer code, String msg){
 
         ResultDTO resultDTO = new ResultDTO();
         resultDTO.setCode(code);

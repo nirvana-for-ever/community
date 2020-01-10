@@ -85,3 +85,24 @@ https://blog.csdn.net/qq_26075861/article/details/54016591
 
 postman:https://getman.cn/  
 如何给谷歌使用postman：https://blog.csdn.net/dearwind153/article/details/52235749
+
+发送ajax用requestbody接参数时，要求发送的参数必须为json字符串，
+同时需要加上contentType:"application/json",
+
+JSON字符串 与 JS 对象的关系
+
+var obj = {a: 'Hello', b: 'World'}; 
+//这是一个对象，注意键名也是可以使用引号包裹的
+
+var json = '{"a": "Hello", "b": "World"}'; 
+//这是一个 JSON 字符串，本质是一个字符串
+
+JSON 和 JS 对象互转
+要实现从JSON字符串转换为JS对象，使用 JSON.parse() 方法：
+var obj = JSON.parse('{"a": "Hello", "b": "World"}'); 
+//结果是 {a: 'Hello', b: 'World'}
+
+要实现从JS对象转换为JSON字符串，使用 JSON.stringify() 方法：
+var json = JSON.stringify({a: 'Hello', b: 'World'}); 
+//结果是 '{"a": "Hello", "b": "World"}'
+

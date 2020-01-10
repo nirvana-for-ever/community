@@ -9,6 +9,7 @@ import com.nirvana.community.model.Comment;
 import com.nirvana.community.model.Question;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @program: community
@@ -25,6 +26,7 @@ public class CommentService {
     @Autowired
     private QuestionMapper questionMapper;
 
+    @Transactional
     public void addComment(Comment comment) {
 
         if (comment.getType()==null){

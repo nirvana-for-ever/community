@@ -25,8 +25,23 @@
                 <span th:text="${showQuestion.description}"></span>
                 <hr>
                 <div th:if="${session.user!=null}">
-                    <a th:if="${session.user.getName()==showQuestion.name}" th:href="@{'/publish/'+${showQuestion.questionId}}" class="glyphicon glyphicon-pencil" style="color: gray">编辑</a>
+                    <a th:if="${session.user.getName()==showQuestion.name}" th:href="@{'/publish/'+${showQuestion.questionId}}" class="glyphicon glyphicon-pencil" style="color: gray">编辑问题</a>
                 </div>
+                <br><br><br>
+                <h3>0个回复</h3>
+                <hr>
+                <br><br>
+                <div class="media-left">
+                    <a href="#">
+                        <img class="media-object img-rounded" th:src="${session.user.getPictureUrl()}" style="width: 40px">
+                    </a>
+                </div>
+                <div style="padding-top: 13px" class="media-body">
+                    <h5 class="media-heading"><a th:text="${session.user.name}"></a></h5>
+                </div>
+                <textarea id="content" style="margin: 10px" class="form-control" rows="3"></textarea>
+                <input id="qid" type="hidden" th:value="${showQuestion.questionId}">
+                <button type="button" class="btn btn-success" style="float: right;margin-bottom: 20px" onclick="publish(1)">发表评论</button>
             </div>
         </div>
         <div style="margin-top: 30px" class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
@@ -48,6 +63,33 @@
 </body>
 
 <script language="JavaScript" type="text/javascript">
+
+    function publish(type) {
+        if (type==1){
+            //如果type是1表示是对于问题的评论
+            //获取问题的id
+            var qid = $("#qid").val();
+            //评论内容
+            var content = $("#content").val();
+
+            $.ajax({
+                url:"/comment",
+                type:"post",
+                contentType:"application/json",
+                data:JSON.stringify({
+                    qid:qid,
+                    content:content,
+                    type:type
+                }),
+                dataType:"json",
+                success:function (result) {
+                    if (result.code==1000){
+                        //成功
+                    }
+                }
+            })
+        }
+    }
 
 </script>
 </html>
