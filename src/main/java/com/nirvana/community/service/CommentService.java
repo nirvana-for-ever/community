@@ -1,15 +1,26 @@
 package com.nirvana.community.service;
 
 import com.nirvana.community.common.Constants;
+import com.nirvana.community.dto.InsertComment;
+import com.nirvana.community.dto.ShowComment;
 import com.nirvana.community.enums.CustomizeErrorCode;
 import com.nirvana.community.exception.CustomizeException;
 import com.nirvana.community.mapper.CommentMapper;
 import com.nirvana.community.mapper.QuestionMapper;
+import com.nirvana.community.mapper.UserMapper;
 import com.nirvana.community.model.Comment;
 import com.nirvana.community.model.Question;
+import com.nirvana.community.model.User;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @program: community
@@ -25,6 +36,9 @@ public class CommentService {
 
     @Autowired
     private QuestionMapper questionMapper;
+
+    @Autowired
+    private UserMapper userMapper;
 
     @Transactional
     public void addComment(Comment comment) {
@@ -53,5 +67,29 @@ public class CommentService {
             commentMapper.insertSelective(comment);
         }
         
+    }
+
+    public List<ShowComment> queryCommentByQId(int id) {
+
+        //根据问题的id查询到该问题下的评论
+        List<Comment> commentList = commentMapper.selectByQId(id);
+        //判断该问题是否有评论，如果没有则直接返回一个空
+        if (0 == commentList.size()) {
+            return new ArrayList<>();
+        }
+
+        //将评论的评论者放入list中并去重
+        List<Integer> commentatorList = commentList.stream().map(Comment::getCommentator).distinct().collect(Collectors.toList());
+        //根据评论者查询到用户信息
+        Map<Integer, User> userMap = userMapper.selectByPrimaryKeyList(commentatorList);
+
+        //将评论与用户挂钩，放入到ShowComment中，形成一个list
+        return commentList.stream().map(comment -> {
+            ShowComment showComment = new ShowComment();
+            BeanUtils.copyProperties(comment, showComment);
+            User user = userMap.get(comment.getCommentator());
+            showComment.setUser(user);
+            return showComment;
+        }).collect(Collectors.toList());
     }
 }

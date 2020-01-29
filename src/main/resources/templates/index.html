@@ -63,12 +63,18 @@
 </body>
 
 <script language="JavaScript" type="text/javascript">
-    $(function () {
 
+    window.onload=function () {
+       if (window.localStorage.getItem("closable")){
+           window.close();
+           window.localStorage.removeItem("closable");
+       }
+    };
+
+    $(function () {
         var id = $(".pagination").attr("id");
         $(".pagination").attr("id",null);
         $("#"+ id).addClass("active");
-
     })
 </script>
 </html>

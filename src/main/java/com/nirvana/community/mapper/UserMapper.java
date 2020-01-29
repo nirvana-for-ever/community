@@ -1,7 +1,11 @@
 package com.nirvana.community.mapper;
 
 import com.nirvana.community.model.User;
+import org.apache.ibatis.annotations.MapKey;
 import org.apache.ibatis.annotations.Mapper;
+
+import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface UserMapper {
@@ -80,4 +84,12 @@ public interface UserMapper {
      * @return
      */
     User selectByNameAndPassword(User user);
+
+    /**
+     * 根据用户id的list查询用户返回map（其中key是用户的id）
+     * @param list
+     * @return
+     */
+    @MapKey("id")
+    Map<Integer, User> selectByPrimaryKeyList(List<Integer> list);
 }

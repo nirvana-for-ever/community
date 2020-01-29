@@ -3,6 +3,8 @@ package com.nirvana.community.mapper;
 import com.nirvana.community.model.Comment;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
+
 @Mapper
 public interface CommentMapper {
     /**
@@ -52,4 +54,11 @@ public interface CommentMapper {
      * @mbggenerated Tue Dec 24 12:59:07 CST 2019
      */
     int updateByPrimaryKey(Comment record);
+
+    /**
+     * 根据父级id查询评论
+     * @param id
+     * @return
+     */
+    List<Comment> selectByQId(int id);
 }

@@ -204,4 +204,14 @@
     from user where name=#{name} and password=#{password}
   </select>
 
+<!--  根据用户id的list查询用户，返回map（其中key是用户的id）-->
+  <select id="selectByPrimaryKeyList" resultType="com.nirvana.community.model.User">
+    select
+    <include refid="Base_Column_List" />
+    from user where id in
+    <foreach collection="list" separator="," item="id" open="(" close=")">
+      #{id}
+    </foreach>
+  </select>
+
 </mapper>

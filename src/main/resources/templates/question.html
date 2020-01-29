@@ -28,20 +28,46 @@
                     <a th:if="${session.user.getName()==showQuestion.name}" th:href="@{'/publish/'+${showQuestion.questionId}}" class="glyphicon glyphicon-pencil" style="color: gray">编辑问题</a>
                 </div>
                 <br><br><br>
-                <h3>0个回复</h3>
+                <h3 th:text="${showQuestion.commentCount}+'个评论'"></h3>
                 <hr>
+                <div th:if="${showComments.size()!=0}">
+                    <div class="media" th:each="showComment : ${showComments}">
+                        <div class="media-left">
+                            <a href="#">
+                                <img class="media-object" th:src="${showComment.user.pictureUrl}" style="width: 40px">
+                            </a>
+                        </div>
+                        <div class="media-body">
+                            <h4 class="media-heading" th:text="${showComment.user.name}">评论id</h4>
+                            <span th:text="${showComment.content}"></span>
+                            <br><br>
+                            <a class="glyphicon glyphicon-thumbs-up" th:text="${showComment.likeCount}"></a>赞&nbsp;&nbsp;
+                            <a class="glyphicon glyphicon-comment">0</a>评论
+                            <span style="float: right;color: gray" th:text="${#dates.format(showComment.gmtCreate, 'yyyy-MM-dd HH:mm')}"></span>
+                            <hr>
+                        </div>
+                    </div>
+                </div>
+                <div th:if="${showComments.size()==0}">
+                    <h3 style="text-align: center;">当前还没有评论哦，赶紧来抢占沙发!!!</h3>
+                </div>
                 <br><br>
-                <div class="media-left">
-                    <a href="#">
-                        <img class="media-object img-rounded" th:src="${session.user.getPictureUrl()}" style="width: 40px">
-                    </a>
+                <div th:if="${session.user!=null}">
+                    <div class="media-left">
+                        <a href="#">
+                            <img class="media-object img-rounded" th:src="${session.user.getPictureUrl()}" style="width: 40px">
+                        </a>
+                    </div>
+                    <div style="padding-top: 13px" class="media-body">
+                        <h5 class="media-heading"><a th:text="${session.user.name}"></a></h5>
+                    </div>
+                    <textarea id="content" style="margin: 10px" class="form-control" rows="3"></textarea>
+                    <input id="qid" type="hidden" th:value="${showQuestion.questionId}">
+                    <button type="button" class="btn btn-success" style="float: right;margin-bottom: 20px" onclick="publish(1)">发表评论</button>
                 </div>
-                <div style="padding-top: 13px" class="media-body">
-                    <h5 class="media-heading"><a th:text="${session.user.name}"></a></h5>
+                <div style="text-align: center" th:if="${session.user==null}">
+                    <span>要评论该问题请先<a href="/user/login">登录</a>或<a href="/user/register">注册</a></span>
                 </div>
-                <textarea id="content" style="margin: 10px" class="form-control" rows="3"></textarea>
-                <input id="qid" type="hidden" th:value="${showQuestion.questionId}">
-                <button type="button" class="btn btn-success" style="float: right;margin-bottom: 20px" onclick="publish(1)">发表评论</button>
             </div>
         </div>
         <div style="margin-top: 30px" class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
@@ -85,6 +111,14 @@
                 success:function (result) {
                     if (result.code==1000){
                         //成功
+                        window.location.reload();
+                    }else if (result.code==1001){
+                        //未登录
+                        if (confirm(result.msg)){
+                            window.open("/user/login");
+                            //设置localstorage，打开一个新的登录页，登录完成之后需要自动关闭页面，所以设置一个标识
+                            window.localStorage.setItem("closable","1");
+                        }
                     }
                 }
             })

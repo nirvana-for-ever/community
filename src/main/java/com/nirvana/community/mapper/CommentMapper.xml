@@ -154,4 +154,15 @@
       like_count = #{likeCount,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <!--根据父级id查询评论-->
+  <select id="selectByQId" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from comment
+    where q_id = #{id,jdbcType=INTEGER}
+    order by
+    gmt_create desc
+  </select>
+
 </mapper>
