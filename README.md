@@ -121,3 +121,6 @@ key-value，如果能读取得到，就说明需要关闭这个页面。
 设置方式：window.localStorage.setItem()
 
 需要看看mybatis逆向工程中的各种ByExample的用法
+
+使用fastjson时出现$ref: "$.[0]"的解决办法：
+https://www.jianshu.com/p/224df499fa0b

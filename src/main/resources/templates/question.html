@@ -41,9 +41,26 @@
                             <h4 class="media-heading" th:text="${showComment.user.name}">评论id</h4>
                             <span th:text="${showComment.content}"></span>
                             <br><br>
-                            <a class="glyphicon glyphicon-thumbs-up" th:text="${showComment.likeCount}"></a>赞&nbsp;&nbsp;
-                            <a class="glyphicon glyphicon-comment">0</a>评论
+                            <span class="label label-default" style="padding: .4em .9em .4em" onmouseover="changeColor(this,true)" onmouseleave="changeColor(this,false)">
+                                <span class="glyphicon glyphicon-thumbs-up" th:text="${showComment.likeCount}"></span>
+                            </span>&nbsp;&nbsp;
+                            <span class="label label-default" style="padding: .4em .9em .4em" onmouseover="changeColor(this,true)" onmouseleave="changeColor(this,false)"
+                                  role="button" data-toggle="collapse" th:href="'#'+${showComment.id}" aria-expanded="false" th:aria-controls="${showComment.id}" th:onclick="'second('+${showComment.id}+')'">
+                                <span class="glyphicon glyphicon-comment">0</span>
+                            </span>
                             <span style="float: right;color: gray" th:text="${#dates.format(showComment.gmtCreate, 'yyyy-MM-dd HH:mm')}"></span>
+                            <br><br>
+                            <!--二级评论-->
+                            <div class="collapse" th:id="${showComment.id}">
+                                <div style="background-color: rgba(120,120,120,0.3);padding: 20px;border-radius: 5px">
+                                    <div th:id="'sec'+${showComment.id}" style="border-radius: 5px;background-color: white;padding: .4em .9em .4em">
+                                        
+                                    </div>
+                                    <br>
+                                    <input th:id="'content'+${showComment.id}" type="text" class="form-control" placeholder="评论一下...."><br>
+                                    <button type="button" class="btn btn-success" style="float: right" th:onclick="'publish(2,'+${showComment.id}+')'">发表评论</button><br><br>
+                                </div>
+                            </div>
                             <hr>
                         </div>
                     </div>
@@ -90,38 +107,97 @@
 
 <script language="JavaScript" type="text/javascript">
 
-    function publish(type) {
+    /**
+     * 发表评论
+     * @param type
+     */
+    function publish(type,cid) {
         if (type==1){
-            //如果type是1表示是对于问题的评论
             //获取问题的id
             var qid = $("#qid").val();
             //评论内容
             var content = $("#content").val();
+        }else if (type==2){
+            //获取问题的id
+            var qid = cid;
+            //评论内容
+            var content = $("#content"+cid).val();
+        }
 
-            $.ajax({
-                url:"/comment",
-                type:"post",
-                contentType:"application/json",
-                data:JSON.stringify({
-                    qid:qid,
-                    content:content,
-                    type:type
-                }),
-                dataType:"json",
-                success:function (result) {
-                    if (result.code==1000){
-                        //成功
-                        window.location.reload();
-                    }else if (result.code==1001){
-                        //未登录
-                        if (confirm(result.msg)){
-                            window.open("/user/login");
-                            //设置localstorage，打开一个新的登录页，登录完成之后需要自动关闭页面，所以设置一个标识
-                            window.localStorage.setItem("closable","1");
-                        }
+        $.ajax({
+            url:"/comment",
+            type:"post",
+            contentType:"application/json",
+            data:JSON.stringify({
+                qid:qid,
+                content:content,
+                type:type
+            }),
+            dataType:"json",
+            success:function (result) {
+                if (result.code==1000){
+                    //成功
+                    window.location.reload();
+                }else if (result.code==1001){
+                    //未登录
+                    if (confirm(result.msg)){
+                        window.open("/user/login");
+                        //设置localstorage，打开一个新的登录页，登录完成之后需要自动关闭页面，所以设置一个标识
+                        window.localStorage.setItem("closable","1");
                     }
                 }
-            })
+            }
+        })
+    }
+
+    /**
+     * 展开2级评论
+     */
+    function second(id) {
+        $.ajax({
+            url:"/comment/showsec",
+            type:"get",
+            contentType:"application/json",
+            data:{
+                qid:id
+            },
+            dataType:"json",
+            success:function (data) {
+                $.each(data,function (index,obj) {
+                    $("#sec"+id).append("<div class=\"media\">\n" +
+                        "                                            <div class=\"media-left\">\n" +
+                        "                                                <a href=\"#\">\n" +
+                        "                                                    <img style=\"width: 40px\" class=\"media-object\" src=\""+obj.user.pictureUrl+"\">\n" +
+                        "                                                </a>\n" +
+                        "                                            </div>\n" +
+                        "                                            <div class=\"media-body\">\n" +
+                        "                                                <h5 class=\"media-heading\">"+obj.user.name+"</h5>\n" +
+                        "                                                <span>"+obj.content+"</span>\n" +
+                        "                                                <br><br>\n" +
+                        "                                                <span class=\"label label-default\" style=\"padding: .4em .9em .4em\" onmouseover=\"changeColor(this,true)\" onmouseleave=\"changeColor(this,false)\">\n" +
+                        "                                                    <span class=\"glyphicon glyphicon-thumbs-up\">"+obj.likeCount+"</span>\n" +
+                        "                                                </span>&nbsp;&nbsp;\n" +
+                        "                                                <span class=\"label label-default\" style=\"padding: .4em .9em .4em\" onmouseover=\"changeColor(this,true)\" onmouseleave=\"changeColor(this,false)\">\n" +
+                        "                                                    <span class=\"glyphicon glyphicon-comment\"></span>\n" +
+                        "                                                </span>\n" +
+                        "                                                <span style=\"float: right;color: gray\">"+new Date(obj.gmtCreate).toISOString().substr(0,16).replace(/[T]/g, ' ')+"</span>\n" +
+                        "                                                <hr>\n" +
+                        "                                            </div>\n" +
+                        "                                        </div>")
+                })
+            }
+        })
+    }
+
+    /**
+     * 鼠标悬浮或离开时改变颜色
+     */
+    function changeColor(t,b) {
+        //t表示当前标签的dom对象，b是判断是鼠标离开事件(false)还是悬浮事件(true)
+        if (b) {
+            $(t).css("background-color", "#2aabd2");
+        }else {
+            $(t).css("background-color", "#8c8c8c");
         }
     }
 

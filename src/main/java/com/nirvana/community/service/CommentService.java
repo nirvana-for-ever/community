@@ -1,7 +1,6 @@
 package com.nirvana.community.service;
 
 import com.nirvana.community.common.Constants;
-import com.nirvana.community.dto.InsertComment;
 import com.nirvana.community.dto.ShowComment;
 import com.nirvana.community.enums.CustomizeErrorCode;
 import com.nirvana.community.exception.CustomizeException;
@@ -19,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
