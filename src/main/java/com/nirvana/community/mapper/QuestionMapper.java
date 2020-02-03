@@ -1,5 +1,6 @@
 package com.nirvana.community.mapper;
 
+import com.nirvana.community.dto.ShowQuestion;
 import com.nirvana.community.model.Question;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -81,4 +82,10 @@ public interface QuestionMapper {
      * @return
      */
     Integer selectQuestionCountByCreator(Integer creator);
+
+    /**
+     * 根据标签查找相关问题，但是要排除原问题
+     * @return
+     */
+    List<Question> selectLikeByTags(Map<String,Object> map);
 }

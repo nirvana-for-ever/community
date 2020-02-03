@@ -87,6 +87,8 @@ public class CommentService {
             BeanUtils.copyProperties(comment, showComment);
             User user = userMap.get(comment.getCommentator());
             showComment.setUser(user);
+            //查询该评论有几个子评论
+            showComment.setSecCount(commentMapper.selectByQId(comment.getId()).size());
             return showComment;
         }).collect(Collectors.toList());
     }

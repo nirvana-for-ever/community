@@ -218,5 +218,17 @@
   <select id="selectQuestionCountByCreator" resultType="java.lang.Integer">
     select count(*) from question where #{creator}=creator
   </select>
+  
+  <!--根据标签查找相关问题，但是要排除原问题-->
+  <select id="selectLikeByTags" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from question
+    where
+    <foreach collection="tags" item="rtag" separator="or">
+      tag like #{rtag}
+    </foreach>
+    and id != #{id}
+  </select>
 
 </mapper>

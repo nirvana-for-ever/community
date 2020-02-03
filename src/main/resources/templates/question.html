@@ -24,6 +24,12 @@
                 <hr>
                 <span th:text="${showQuestion.description}"></span>
                 <hr>
+                <span th:each="tag : ${showQuestion.tag.split(',')}">
+                    <span class="label label-info">
+                        <span class="glyphicon glyphicon-tags" th:text="${tag}"></span>
+                    </span>&nbsp;
+                </span>
+                <hr>
                 <div th:if="${session.user!=null}">
                     <a th:if="${session.user.getName()==showQuestion.name}" th:href="@{'/publish/'+${showQuestion.questionId}}" class="glyphicon glyphicon-pencil" style="color: gray">编辑问题</a>
                 </div>
@@ -46,7 +52,7 @@
                             </span>&nbsp;&nbsp;
                             <span class="label label-default" style="padding: .4em .9em .4em" onmouseover="changeColor(this,true)" onmouseleave="changeColor(this,false)"
                                   role="button" data-toggle="collapse" th:href="'#'+${showComment.id}" aria-expanded="false" th:aria-controls="${showComment.id}" th:onclick="'second('+${showComment.id}+')'">
-                                <span class="glyphicon glyphicon-comment">0</span>
+                                <span class="glyphicon glyphicon-comment" th:text="${showComment.secCount}"></span>
                             </span>
                             <span style="float: right;color: gray" th:text="${#dates.format(showComment.gmtCreate, 'yyyy-MM-dd HH:mm')}"></span>
                             <br><br>
@@ -54,7 +60,7 @@
                             <div class="collapse" th:id="${showComment.id}">
                                 <div style="background-color: rgba(120,120,120,0.3);padding: 20px;border-radius: 5px">
                                     <div th:id="'sec'+${showComment.id}" style="border-radius: 5px;background-color: white;padding: .4em .9em .4em">
-                                        
+
                                     </div>
                                     <br>
                                     <input th:id="'content'+${showComment.id}" type="text" class="form-control" placeholder="评论一下...."><br>
@@ -100,6 +106,10 @@
             </div>
             <hr>
             相关问题
+            <br>
+            <div th:each="rQuestion : ${rQuestions}">
+                <a th:href="@{'/question/'+${rQuestion.questionId}}" th:text="${rQuestion.title}"></a>
+            </div>
         </div>
     </div>
 </div>
@@ -154,39 +164,61 @@
      * 展开2级评论
      */
     function second(id) {
+        //每次执行这个方法的时候都要先查看里面是否已经有元素，如果有了就不需要重新访问数据库了
+        if ($("#sec"+id).html().trim()!==""){
+            return;
+        }
         $.ajax({
-            url:"/comment/showsec",
-            type:"get",
-            contentType:"application/json",
-            data:{
-                qid:id
+            url: "/comment/showsec",
+            type: "get",
+            contentType: "application/json",
+            data: {
+                qid: id
             },
-            dataType:"json",
-            success:function (data) {
-                $.each(data,function (index,obj) {
-                    $("#sec"+id).append("<div class=\"media\">\n" +
+            dataType: "json",
+            success: function (data) {
+                $.each(data, function (index, obj) {
+                    //对二级回复加上@的超链接,但是这个功能需要后端查找评论的时候把@的那个用户的信息也找出来，懒得做了
+                    var content = "";
+                    var length = 0;
+                    if (obj.content.substr(0,1)==="@"){
+                        var at = obj.content.split(":");
+                        length = at[0].length;
+                        content = "<a href=\"#\">"+at[0]+"</a>";
+                        content += ":"+obj.content.substring(length+1,obj.content.length);
+                    }else {
+                        content += obj.content;
+                    }
+                    $("#sec" + id).append("<div class=\"media\">\n" +
                         "                                            <div class=\"media-left\">\n" +
                         "                                                <a href=\"#\">\n" +
-                        "                                                    <img style=\"width: 40px\" class=\"media-object\" src=\""+obj.user.pictureUrl+"\">\n" +
+                        "                                                    <img style=\"width: 40px\" class=\"media-object\" src=\"" + obj.user.pictureUrl + "\">\n" +
                         "                                                </a>\n" +
                         "                                            </div>\n" +
                         "                                            <div class=\"media-body\">\n" +
-                        "                                                <h5 class=\"media-heading\">"+obj.user.name+"</h5>\n" +
-                        "                                                <span>"+obj.content+"</span>\n" +
+                        "                                                <h5 class=\"media-heading\">" + obj.user.name + "</h5>\n" +
+                        "                                                <span>" + content + "</span>\n" +
                         "                                                <br><br>\n" +
                         "                                                <span class=\"label label-default\" style=\"padding: .4em .9em .4em\" onmouseover=\"changeColor(this,true)\" onmouseleave=\"changeColor(this,false)\">\n" +
-                        "                                                    <span class=\"glyphicon glyphicon-thumbs-up\">"+obj.likeCount+"</span>\n" +
+                        "                                                    <span class=\"glyphicon glyphicon-thumbs-up\">" + obj.likeCount + "</span>\n" +
                         "                                                </span>&nbsp;&nbsp;\n" +
-                        "                                                <span class=\"label label-default\" style=\"padding: .4em .9em .4em\" onmouseover=\"changeColor(this,true)\" onmouseleave=\"changeColor(this,false)\">\n" +
+                        "                                                <span onClick='reply(\""+ obj.user.name  +"\","+id+")' class=\"label label-default\" style=\"padding: .4em .9em .4em\" onmouseover=\"changeColor(this,true)\" onmouseleave=\"changeColor(this,false)\">\n" +
                         "                                                    <span class=\"glyphicon glyphicon-comment\"></span>\n" +
                         "                                                </span>\n" +
-                        "                                                <span style=\"float: right;color: gray\">"+new Date(obj.gmtCreate).toISOString().substr(0,16).replace(/[T]/g, ' ')+"</span>\n" +
+                        "                                                <span style=\"float: right;color: gray\">" + new Date(obj.gmtCreate).toISOString().substr(0, 16).replace(/[T]/g, ' ') + "</span>\n" +
                         "                                                <hr>\n" +
                         "                                            </div>\n" +
-                        "                                        </div>")
+                        "                                        </div>");
                 })
             }
-        })
+        });
+    }
+
+    /**
+     * 二级评论回复时添加@用户名
+     */
+    function reply(name,id) {
+        $("#content"+id).val($("#content"+id).val()+"@"+name+":");
     }
 
     /**

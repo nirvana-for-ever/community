@@ -124,3 +124,8 @@ key-value，如果能读取得到，就说明需要关闭这个页面。
 
 使用fastjson时出现$ref: "$.[0]"的解决办法：
 https://www.jianshu.com/p/224df499fa0b
+
+js中拼接标签的时候，onclick事件拼接字符串的时候需要传递字符串，比如  
+$("#id").append("<span onClick='reply(\""+ string  +"\","+id+")'</span>")  
+其中string为字符串变量，需要按如上的方式进行，详见：
+https://www.cnblogs.com/springlight/p/5782637.html

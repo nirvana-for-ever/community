@@ -1,6 +1,5 @@
 package com.nirvana.community.controller;
 
-import com.nirvana.community.dto.InsertComment;
 import com.nirvana.community.dto.ShowComment;
 import com.nirvana.community.dto.ShowQuestion;
 import com.nirvana.community.service.CommentService;
@@ -35,6 +34,10 @@ public class QuestionController {
         //查询问题
         ShowQuestion showQuestion = questionService.queryQuestionById(id,true);
         model.addAttribute("showQuestion",showQuestion);
+
+        //查询相关问题
+        List<ShowQuestion> rQuestions = questionService.queryRelatedQuestion(showQuestion.getTag(),showQuestion.getQuestionId());
+        model.addAttribute("rQuestions",rQuestions);
 
         //查询评论
         List<ShowComment> showComments = commentService.queryCommentByQId(id);

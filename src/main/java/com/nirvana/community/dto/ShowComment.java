@@ -20,5 +20,7 @@ public class ShowComment {
     private String content;
     private Integer likeCount;
     private User user;
+    //子评论个数
+    private Integer secCount;
 
 }

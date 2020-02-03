@@ -1,6 +1,5 @@
 package com.nirvana.community.service;
 
-import com.nirvana.community.common.Constants;
 import com.nirvana.community.dto.ShowQuestion;
 import com.nirvana.community.enums.CustomizeErrorCode;
 import com.nirvana.community.exception.CustomizeException;
@@ -8,9 +7,16 @@ import com.nirvana.community.mapper.QuestionMapper;
 import com.nirvana.community.mapper.UserMapper;
 import com.nirvana.community.model.Question;
 import com.nirvana.community.model.User;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @program: community
@@ -34,7 +40,6 @@ public class QuestionService {
      */
     public ShowQuestion queryQuestionById(int id,boolean isRead) {
 
-
         Question question = questionMapper.selectByPrimaryKey(id);
         if (null == question) {
             //自定义的异常
@@ -55,5 +60,28 @@ public class QuestionService {
         showQuestion.setQuestionId(question.getId());
 
         return showQuestion;
+    }
+
+    /**
+     * 根据标签查找相关问题
+     */
+    public List<ShowQuestion> queryRelatedQuestion(String tag,Integer id) {
+
+        //根据逗号将标签拆分
+        List<String> tags = Arrays.stream(StringUtils.split(tag, ",")).map(s -> "%" + s + "%").collect(Collectors.toList());
+
+        //转化成map传进去
+        Map<String,Object> map = new HashMap<>();
+        map.put("tags",tags);
+        map.put("id",id);
+
+        List<Question> questions = questionMapper.selectLikeByTags(map);
+
+        return questions.stream().map(question -> {
+            ShowQuestion showQuestion = new ShowQuestion();
+            BeanUtils.copyProperties(question, showQuestion);
+            showQuestion.setQuestionId(question.getId());
+            return showQuestion;
+        }).collect(Collectors.toList());
     }
 }
