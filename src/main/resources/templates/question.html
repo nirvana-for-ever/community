@@ -120,9 +120,10 @@
     /**
      * 发表评论
      * @param type
+     * @param cid
      */
     function publish(type,cid) {
-        if (type==1){
+        if (type===1){
             //获取问题的id
             var qid = $("#qid").val();
             //评论内容

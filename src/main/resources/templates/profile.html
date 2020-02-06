@@ -18,45 +18,80 @@
 <div class="container-fluid" style="background: white;margin-left: 200px;margin-top: 30px;margin-right: 200px">
     <div class="row">
         <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
-            <div>
-                <h2 class="glyphicon glyphicon-hand-down"><span th:text="${title}"></span></h2>
+            <!--我的问题 start-->
+            <div th:if="${action=='questions'}">
+                <div>
+                    <h3 class="glyphicon glyphicon-hand-down"><span th:text="${title}"></span></h3>
+                    <hr>
+                    <div class="media" th:each="showQuestion : ${showQuestions}">
+                        <div class="media-left">
+                            <a href="#">
+                                <img class="media-object img-rounded" th:src="${showQuestion.pictureUrl}" style="width: 40px">
+                            </a>
+                        </div>
+                        <div class="media-body">
+                            <h5 class="media-heading"><a th:text="${showQuestion.title}" th:href="@{'/question/'+${showQuestion.questionId}}"></a></h5>
+                            <span style="color: grey" th:text="'•'+${showQuestion.name} + '发布了问题•'+${showQuestion.readCount}+'次浏览•'+${showQuestion.commentCount}+'条评论• '+${#dates.format(showQuestion.gmtCreate, 'yyyy-MM-dd HH:mm')}"></span>
+                        </div>
+                        <hr>
+                    </div>
+                </div>
+                <!--分页按钮-->
+                <nav aria-label="Page navigation" style="float: right">
+                    <ul class="pagination" th:id="${current}">
+                        <li th:if="${showStart}">
+                            <a th:href="@{'/profile/'+${action}+'?order=start'}" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                        <li th:if="${pages[0]!=null}" th:id="${pages[0]}"><a th:href="@{'/profile/'+${action}+'?destinationPage='+${pages[0]}}" th:text="${pages[0]}"></a></li>
+                        <li th:if="${pages[1]!=null}" th:id="${pages[1]}"><a th:href="@{'/profile/'+${action}+'?destinationPage='+${pages[1]}}" th:text="${pages[1]}"></a></li>
+                        <li th:if="${pages[2]!=null}" th:id="${pages[2]}"><a th:href="@{'/profile/'+${action}+'?destinationPage='+${pages[2]}}" th:text="${pages[2]}"></a></li>
+                        <li th:if="${pages[3]!=null}" th:id="${pages[3]}"><a th:href="@{'/profile/'+${action}+'?destinationPage='+${pages[3]}}" th:text="${pages[3]}"></a></li>
+                        <li th:if="${pages[4]!=null}" th:id="${pages[4]}"><a th:href="@{'/profile/'+${action}+'?destinationPage='+${pages[4]}}" th:text="${pages[4]}"></a></li>
+                        <li th:if="${showEnd}">
+                            <a th:href="@{'/profile/'+${action}+'?order=end'}" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+            <!--我的问题 end-->
+
+            <!--我的消息 start-->
+            <div th:if="${action=='notifications'}">
+                <h3 class="glyphicon glyphicon-hand-down"><span th:text="${title}"></span></h3>
                 <hr>
-                <div class="media" th:each="showQuestion : ${showQuestions}">
+                <div class="media" th:each="notification : ${notifications}">
                     <div class="media-left">
                         <a href="#">
-                            <img class="media-object img-rounded" th:src="${showQuestion.pictureUrl}" style="width: 40px">
+                            <img class="media-object img-rounded" th:src="${notification.user.pictureUrl}" style="width: 40px">
                         </a>
                     </div>
                     <div class="media-body">
-                        <h5 class="media-heading"><a th:text="${showQuestion.title}" th:href="@{'/question/'+${showQuestion.questionId}}"></a></h5>
-                        <span style="color: grey" th:text="'•'+${showQuestion.name} + '发布了问题•'+${showQuestion.readCount}+'次浏览•'+${showQuestion.commentCount}+'条评论• '+${#dates.format(showQuestion.gmtCreate, 'yyyy-MM-dd HH:mm')}"></span>
+                        <h5 class="media-heading"><a th:text="${notification.user.name}" href="#"></a></h5>
+                        <span th:text="${notification.type}"></span>:
+                        <a th:text="${notification.content}" th:href="@{'/question/'+${notification.id}}"></a>
+                        <span style="color: grey;float: right" th:text="${#dates.format(notification.gmtCreate, 'yyyy-MM-dd HH:mm')}"></span>
                     </div>
                     <hr>
                 </div>
             </div>
-            <!--分页按钮-->
-            <nav aria-label="Page navigation" style="float: right">
-                <ul class="pagination" th:id="${current}">
-                    <li th:if="${showStart}">
-                        <a th:href="@{'/profile/'+${action}+'?order=start'}" aria-label="Previous">
-                            <span aria-hidden="true">&laquo;</span>
-                        </a>
-                    </li>
-                    <li th:if="${pages[0]!=null}" th:id="${pages[0]}"><a th:href="@{'/profile/'+${action}+'?destinationPage='+${pages[0]}}" th:text="${pages[0]}"></a></li>
-                    <li th:if="${pages[1]!=null}" th:id="${pages[1]}"><a th:href="@{'/profile/'+${action}+'?destinationPage='+${pages[1]}}" th:text="${pages[1]}"></a></li>
-                    <li th:if="${pages[2]!=null}" th:id="${pages[2]}"><a th:href="@{'/profile/'+${action}+'?destinationPage='+${pages[2]}}" th:text="${pages[2]}"></a></li>
-                    <li th:if="${pages[3]!=null}" th:id="${pages[3]}"><a th:href="@{'/profile/'+${action}+'?destinationPage='+${pages[3]}}" th:text="${pages[3]}"></a></li>
-                    <li th:if="${pages[4]!=null}" th:id="${pages[4]}"><a th:href="@{'/profile/'+${action}+'?destinationPage='+${pages[4]}}" th:text="${pages[4]}"></a></li>
-                    <li th:if="${showEnd}">
-                        <a th:href="@{'/profile/'+${action}+'?order=end'}" aria-label="Next">
-                            <span aria-hidden="true">&raquo;</span>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
+            <!--我的消息 end-->
+
         </div>
         <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
-            为什么？？
+            <div class="list-group" style="margin-top: 30px">
+                <a href="/profile/questions" class="list-group-item list-group-item-info">我的问题</a>
+                <a href="/profile/notifications" class="list-group-item list-group-item-info">
+                    我的消息
+                    <span th:if="${session.user.getUnreadNotificationCount()}!=0">
+                        <span class="badge" style="background-color: red;float: right"
+                              th:text="${session.user.getUnreadNotificationCount()}"></span>
+                    </span>
+                </a>
+            </div>
         </div>
     </div>
 </div>
@@ -64,12 +99,16 @@
 
 <script language="JavaScript" type="text/javascript">
     $(function () {
+        if ($(document).attr('title')==='我的问题'){
+            var id = $(".pagination").attr("id");
+            $(".pagination").attr("id",null);
+            $("#"+ id).addClass("active");
+        }else {
 
-        var id = $(".pagination").attr("id");
-        $(".pagination").attr("id",null);
-        $("#"+ id).addClass("active");
-
+        }
     })
+
+
 </script>
 
 </html>

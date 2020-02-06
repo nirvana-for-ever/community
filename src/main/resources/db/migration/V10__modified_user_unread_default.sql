@@ -1,0 +1,1 @@
+alter table user alter column unread_notification_count set default 0;

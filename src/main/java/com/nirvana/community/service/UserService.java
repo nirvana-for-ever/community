@@ -1,10 +1,13 @@
 package com.nirvana.community.service;
 
+import com.nirvana.community.mapper.NotificationMapper;
 import com.nirvana.community.mapper.UserMapper;
+import com.nirvana.community.model.Notification;
 import com.nirvana.community.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -18,6 +21,9 @@ public class UserService {
 
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private NotificationMapper notificationMapper;
 
     public User queryUserByName(String name) {
         return userMapper.selectByName(name);
@@ -37,7 +43,14 @@ public class UserService {
     }
 
     public User checkUser(User pUser) {
-        return userMapper.selectByNameAndPassword(pUser);
+        User rUser = userMapper.selectByNameAndPassword(pUser);
+        if (null != rUser) {
+            //查询未读消息数
+            List<Notification> notificationList = notificationMapper.selectByReceiver(rUser.getId());
+            long count = notificationList.stream().filter(notification -> notification.getStatus() == 0).count();
+            rUser.setUnreadNotificationCount((int) count);
+        }
+        return rUser;
     }
 
     public int login(User lUser) {

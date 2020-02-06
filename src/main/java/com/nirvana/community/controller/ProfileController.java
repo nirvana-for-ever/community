@@ -1,9 +1,13 @@
 package com.nirvana.community.controller;
 
 import com.nirvana.community.Util.PaginationUtil;
+import com.nirvana.community.dto.ShowNotification;
 import com.nirvana.community.dto.ShowQuestion;
+import com.nirvana.community.model.Notification;
 import com.nirvana.community.model.User;
 import com.nirvana.community.service.IndexService;
+import com.nirvana.community.service.ProfileService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -27,6 +31,9 @@ public class ProfileController {
 
     @Autowired
     private IndexService indexService;
+
+    @Autowired
+    private ProfileService profileService;
 
     //用/方式接参数
     @GetMapping("/profile/{action}")
@@ -52,6 +59,21 @@ public class ProfileController {
             List<ShowQuestion> showQuestions = PaginationUtil.getShowQuestions(paramMap,indexService,model);
 
             model.addAttribute("showQuestions",showQuestions);
+
+        }else if (StringUtils.equals(action,"notifications")){
+            //路径是notifications是要查看消息
+            model.addAttribute("title","我的消息");
+            model.addAttribute("action","notifications");
+
+            //不分页了，反正有插件
+            User user = (User) request.getSession().getAttribute("user");
+            List<ShowNotification> notifications = profileService.queryNotificationByUser(user);
+
+            //同步修改session中的user的未读数
+            user.setUnreadNotificationCount(0);
+            request.getSession().setAttribute("user",user);
+
+            model.addAttribute("notifications",notifications);
 
         }
         return "profile";

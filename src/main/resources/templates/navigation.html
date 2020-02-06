@@ -31,6 +31,19 @@
                         </a>
                     </li>
                     <li th:if="${session.user!= null}">
+                        <a href="/profile/notifications">
+                            <span>
+                                <span th:if="${session.user.getUnreadNotificationCount()}!=0">
+                                    <span class="badge" style="background-color: red;float: right;height: 13px;width: 12px;line-height: 7px;padding-left: 3px;margin-bottom: 0px;"
+                                          th:text="${session.user.getUnreadNotificationCount()}"></span>
+                                </span>
+                                <h4 style="display: inline">
+                                    <span class="glyphicon glyphicon-bell" style="color: white"></span>
+                                </h4>
+                            </span>
+                        </a>
+                    </li>
+                    <li th:if="${session.user!= null}">
                         <h4 style="margin-top: 14px">
                             <a style="display: inline;" class="glyphicon glyphicon-edit" th:href="@{/publish}"></a><span style="color:white;">发布</span>&nbsp;&nbsp;
                         </h4>

@@ -5,9 +5,11 @@ import com.nirvana.community.dto.ShowComment;
 import com.nirvana.community.enums.CustomizeErrorCode;
 import com.nirvana.community.exception.CustomizeException;
 import com.nirvana.community.mapper.CommentMapper;
+import com.nirvana.community.mapper.NotificationMapper;
 import com.nirvana.community.mapper.QuestionMapper;
 import com.nirvana.community.mapper.UserMapper;
 import com.nirvana.community.model.Comment;
+import com.nirvana.community.model.Notification;
 import com.nirvana.community.model.Question;
 import com.nirvana.community.model.User;
 import org.springframework.beans.BeanUtils;
@@ -38,6 +40,9 @@ public class CommentService {
     @Autowired
     private UserMapper userMapper;
 
+    @Autowired
+    private NotificationMapper notificationMapper;
+
     @Transactional
     public void addComment(Comment comment) {
 
@@ -56,6 +61,14 @@ public class CommentService {
             question.setCommentCount(question.getCommentCount()+1);
             questionMapper.updateByPrimaryKeySelective(question);
 
+            //对该问题的发布者添加一条通知（notification）,notification的默认值0表示未读，不用设置
+            Notification notification = getNotification();
+            notification.setQid(question.getId());
+            notification.setSender(comment.getCommentator());
+            notification.setReceiver(question.getCreator());
+            notification.setType(Constants.TO_QUESTION);
+            notificationMapper.insertSelective(notification);
+
         }else if (comment.getType().equals(Constants.TO_COMMENT)){
             //对于评论的评论
             Comment parentComment = commentMapper.selectByPrimaryKey(comment.getqId());
@@ -63,6 +76,15 @@ public class CommentService {
                 throw new CustomizeException(CustomizeErrorCode.COMMENT_NOT_FOUND);
             }
             commentMapper.insertSelective(comment);
+
+            //对该问题的发布者添加一条通知（notification）,notification的默认值0表示未读，不用设置
+            Notification notification = getNotification();
+            notification.setQid(parentComment.getId());
+            notification.setSender(comment.getCommentator());
+            notification.setReceiver(parentComment.getCommentator());
+            notification.setType(Constants.TO_COMMENT);
+            notificationMapper.insertSelective(notification);
+
         }
         
     }
@@ -91,5 +113,11 @@ public class CommentService {
             showComment.setSecCount(commentMapper.selectByQId(comment.getId()).size());
             return showComment;
         }).collect(Collectors.toList());
+    }
+
+    private Notification getNotification(){
+        Notification notification = new Notification();
+        notification.setGmtCreate(System.currentTimeMillis());
+        return notification;
     }
 }

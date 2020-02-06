@@ -20,5 +20,6 @@ public class User {
     private String pictureUrl;
     private String bio;
     private String password;
+    private Integer unreadNotificationCount;
 
 }

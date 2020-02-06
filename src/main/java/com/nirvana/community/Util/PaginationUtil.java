@@ -20,13 +20,14 @@ import java.util.Map;
  **/
 
 public class PaginationUtil {
+
     public static List<ShowQuestion> getShowQuestions(Map<String,Object> paramMap,IndexService indexService,Model model) {
 
         //分页查询传递参数
         Map<String,Object> pageMap = new HashMap<>();
 
         //判断一共有几条数据
-        Integer questionCount = indexService.queryQuestionCount();
+        Integer questionCount;
 
         //判断是否有其它分页查询条件
         if (paramMap.get("id")!=null){
@@ -34,6 +35,7 @@ public class PaginationUtil {
             questionCount = indexService.queryQuestionCount((Integer) paramMap.get("id"));
         }else {
             //如果没有creator，则统一设置为0
+            questionCount = indexService.queryQuestionCount();
             pageMap.put("creator",0);
         }
 

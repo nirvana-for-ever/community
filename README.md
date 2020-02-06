@@ -26,6 +26,10 @@ ctrl+r：修改同样的内容
 
 ctrl+alt+o：删除无用的包
 
+alt+f7:查找这个方法在哪个地方还用过
+
+shift+f6:修改同名变量名
+
 解决intellij idea卡顿的方法:进入电脑中intellij idea的安装目录中去，找到其中的bin文件夹，
 在bin文件夹中有两个文件，分别叫做:idea.exe.vmoptions与idea64.exe.vmoptions
 修改成
