@@ -1,10 +1,12 @@
 package com.nirvana.community.controller;
 
+import com.nirvana.community.Util.CheckNotificationCount;
 import com.nirvana.community.Util.PaginationUtil;
 import com.nirvana.community.mapper.QuestionMapper;
 import com.nirvana.community.mapper.UserMapper;
 import com.nirvana.community.dto.ShowQuestion;
 import com.nirvana.community.service.IndexService;
+import com.nirvana.community.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,10 +28,7 @@ import java.util.Map;
 public class IndexController {
 
     @Autowired
-    private UserMapper userMapper;
-
-    @Autowired
-    private QuestionMapper questionMapper;
+    private UserService userService;
 
     @Autowired
     private IndexService indexService;
@@ -39,6 +38,8 @@ public class IndexController {
                         @RequestParam(value = "order",required = false) String order,
                         HttpServletRequest request,
                         Model model) {
+
+        CheckNotificationCount.check(request,userService);
 
         //封装分页查询需要的参数
         Map<String,Object> paramMap = new HashMap<>();

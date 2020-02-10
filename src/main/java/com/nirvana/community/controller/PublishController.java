@@ -1,5 +1,6 @@
 package com.nirvana.community.controller;
 
+import com.nirvana.community.Util.CheckNotificationCount;
 import com.nirvana.community.dto.ShowQuestion;
 import com.nirvana.community.mapper.QuestionMapper;
 import com.nirvana.community.mapper.UserMapper;
@@ -7,6 +8,7 @@ import com.nirvana.community.model.Question;
 import com.nirvana.community.model.User;
 import com.nirvana.community.service.PublishService;
 import com.nirvana.community.service.QuestionService;
+import com.nirvana.community.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -27,7 +29,7 @@ public class PublishController {
     private QuestionMapper questionMapper;
 
     @Autowired
-    private UserMapper userMapper;
+    private UserService userService;
 
     @Autowired
     private PublishService publishService;
@@ -44,13 +46,16 @@ public class PublishController {
     //当带有问题的id参数的时候，说明是要进行编辑的操作
     @GetMapping("/publish/{id}")
     public String edit(@PathVariable(value = "id")Integer id,
-                       Model model){
+                       Model model,
+                       HttpServletRequest request){
 
         ShowQuestion showQuestion = questionService.queryQuestionById(id,false);
         model.addAttribute("id",showQuestion.getQuestionId());
         model.addAttribute("title",showQuestion.getTitle());
         model.addAttribute("description",showQuestion.getDescription());
         model.addAttribute("tag",showQuestion.getTag());
+
+        CheckNotificationCount.check(request,userService);
 
         return "publish";
     }

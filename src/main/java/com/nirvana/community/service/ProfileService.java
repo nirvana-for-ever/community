@@ -59,7 +59,7 @@ public class ProfileService {
                 showNotification.setUser(userMapper.selectByPrimaryKey(notification.getSender()));
 
                 Comment comment = commentMapper.selectByPrimaryKey(notification.getQid());
-                Question question = new Question();
+                Question question;
                 if (comment.getType().equals(Constants.TO_QUESTION)) {
                     question = questionMapper.selectByPrimaryKey(comment.getqId());
                 } else {
@@ -79,6 +79,9 @@ public class ProfileService {
         notification.setStatus(Constants.READ);
         notification.setReceiver(user.getId());
         notificationMapper.updateStatusByReceiver(notification);
+
+        user.setUnreadNotificationCount(0);
+        userMapper.updateByPrimaryKeySelective(user);
 
         return showNotifications;
     }

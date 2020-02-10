@@ -1,5 +1,6 @@
 package com.nirvana.community.controller;
 
+import com.nirvana.community.Util.CheckNotificationCount;
 import com.nirvana.community.Util.PaginationUtil;
 import com.nirvana.community.dto.ShowNotification;
 import com.nirvana.community.dto.ShowQuestion;
@@ -7,6 +8,7 @@ import com.nirvana.community.model.Notification;
 import com.nirvana.community.model.User;
 import com.nirvana.community.service.IndexService;
 import com.nirvana.community.service.ProfileService;
+import com.nirvana.community.service.UserService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -35,6 +37,9 @@ public class ProfileController {
     @Autowired
     private ProfileService profileService;
 
+    @Autowired
+    private UserService userService;
+
     //用/方式接参数
     @GetMapping("/profile/{action}")
     public String profile(@PathVariable("action") String action,
@@ -42,6 +47,8 @@ public class ProfileController {
                           @RequestParam(value = "order",required = false) String order,
                           HttpServletRequest request,
                           Model model){
+
+        CheckNotificationCount.check(request,userService);
 
         //如果路径的值是questions就跳转到我的问题页面
         if("questions".equals(action)){

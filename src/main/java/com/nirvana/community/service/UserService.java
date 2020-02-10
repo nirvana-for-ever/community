@@ -64,4 +64,10 @@ public class UserService {
         return userMapper.updateByPrimaryKeySelective(lUser);
 
     }
+
+    public Integer checkNotification(User user) {
+
+        return userMapper.selectByPrimaryKey(user.getId()).getUnreadNotificationCount();
+
+    }
 }
